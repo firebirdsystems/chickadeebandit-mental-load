@@ -1,0 +1,15 @@
+{
+  "scenarios": [
+    {
+      "name": "reciprocal partners share the board; outsiders see nothing",
+      "members": { "a": "adult", "b": "adult", "outsider": "adult" },
+      "steps": [
+        { "action": "seedRaw", "sql": "INSERT INTO app_mental_load__partner_config (member_id, partner_id, session_id) VALUES (?, ?, ?)", "params": ["{{a}}", "{{b}}", "sess-ab"] },
+        { "action": "seedRaw", "sql": "INSERT INTO app_mental_load__partner_config (member_id, partner_id, session_id) VALUES (?, ?, ?)", "params": ["{{b}}", "{{a}}", "sess-ab"] },
+        { "action": "db", "as": "a", "sql": "INSERT INTO app_mental_load__cards (id, created_by, title, category, created_at, session_id) VALUES (?, ?, ?, ?, ?, ?)", "params": ["c1", "{{a}}", "Plan meals", "meals", "2026-01-01T00:00:00Z", "sess-ab"], "expect": { "status": 200 } },
+        { "action": "db", "as": "b", "sql": "SELECT id FROM app_mental_load__cards", "expect": { "status": 200, "rowCount": 1, "rowsContain": [{ "id": "c1" }] } },
+        { "action": "db", "as": "outsider", "sql": "SELECT id FROM app_mental_load__cards", "expect": { "status": 200, "rowCount": 0 } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "id": "mental-load",
+  "name": "Mental Load",
+  "version": "1.0.0",
+  "description": "A fair-play tracker for couples: name the invisible domains someone has to own — planning meals, remembering birthdays, booking checkups — see who holds what, and rebalance together.",
+  "entrypoint": "index.html",
+  "runtime": "static",
+  "icon": "⚖️",
+  "category": "couple",
+  "tags": ["couples", "fair-play", "mental-load", "chores", "balance"],
+  "storage": "db",
+  "db_plaintext_columns": ["category"],
+  "data_access": {
+    "reads": ["family.members"],
+    "writes": []
+  },
+  "permissions": {
+    "default_audience": "adults",
+    "requires_approval": false
+  },
+  "partner_link": {
+    "table": "partner_config",
+    "member_column": "member_id",
+    "partner_id_column": "partner_id",
+    "session_id_column": "session_id",
+    "require_role": "adult"
+  },
+  "row_policies": {
+    "partner_config": {
+      "kind": "owner_only",
+      "member_column": "member_id",
+      "adults_bypass": false,
+      "endpoint_writes_only": true
+    },
+    "cards": {
+      "kind": "couple_scoped",
+      "self_column": "created_by",
+      "participant_columns": ["created_by"],
+      "partner_table": "partner_config",
+      "partner_member_column": "member_id",
+      "partner_id_column": "partner_id",
+      "session_column": "session_id",
+      "partner_session_id_column": "session_id",
+      "require_reciprocal": true
+    },
+    "checkins": {
+      "kind": "couple_scoped",
+      "self_column": "created_by",
+      "participant_columns": ["created_by"],
+      "partner_table": "partner_config",
+      "partner_member_column": "member_id",
+      "partner_id_column": "partner_id",
+      "session_column": "session_id",
+      "partner_session_id_column": "session_id",
+      "require_reciprocal": true
+    }
+  },
+  "nav": { "label": "Mental Load" },
+  "resource_limits": {
+    "max_db_bytes": 26214400
+  }
+}

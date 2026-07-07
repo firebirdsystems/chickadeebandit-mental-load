@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <base href="/run/mental-load/" />
+  <title>Mental Load</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: var(--hub-bg, #f9fafb); --surface: var(--hub-surface, #fff);
+      --border: var(--hub-border, #e5e7eb); --text: var(--hub-text, #111827);
+      --muted: var(--hub-text-muted, #6b7280); --accent: var(--hub-primary, #db2777);
+      --accent-fg: var(--hub-primary-fg, #fff); --radius: var(--hub-radius, 8px);
+      --me: #db2777; --partner: #2563eb; --shadow: 0 1px 3px rgba(15,23,42,.07);
+    }
+    body { font-family: var(--hub-font, system-ui, sans-serif); font-size: var(--hub-font-size, 15px);
+      background: var(--bg); color: var(--text); min-height: 100vh; line-height: 1.5; }
+    .view { display: none; } .view.active { display: block; }
+    .wrap { max-width: 760px; margin: 0 auto; padding: 16px; }
+    .header { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 14px; }
+    .header h1 { font-size: 1.3rem; }
+    .muted { color: var(--muted); } .tiny { font-size: .78rem; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; border: 1px solid transparent;
+      border-radius: 8px; padding: 8px 13px; font: inherit; font-size: .87rem; font-weight: 700; cursor: pointer;
+      min-height: 38px; background: var(--accent); color: var(--accent-fg); }
+    .btn:hover { opacity: .9; } .btn:disabled { opacity: .5; cursor: default; }
+    .btn-ghost { background: transparent; color: var(--text); border-color: var(--border); }
+    .btn-ghost:hover { background: var(--bg); }
+    .btn-sm { min-height: 30px; padding: 4px 9px; font-size: .78rem; }
+    .btn-icon { background: transparent; border: none; cursor: pointer; color: var(--muted); font-size: 1.1rem; padding: 6px; border-radius: 6px; }
+    .btn-icon:hover { background: var(--bg); color: var(--text); }
+    /* setup */
+    .setup-wrap { display: flex; align-items: center; justify-content: center; min-height: 80vh; padding: 40px 18px; }
+    .setup-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 30px; max-width: 420px; width: 100%; text-align: center; box-shadow: var(--shadow); }
+    .setup-icon { font-size: 2.4rem; margin-bottom: 14px; }
+    .setup-card h2 { font-size: 1.2rem; margin-bottom: 6px; }
+    .setup-desc { color: var(--muted); font-size: .9rem; margin-bottom: 22px; }
+    .pick-label { font-weight: 700; margin-bottom: 10px; text-align: left; display: block; font-size: .85rem; }
+    .member-option { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border: 1px solid var(--border);
+      border-radius: 8px; cursor: pointer; margin-bottom: 6px; text-align: left; }
+    .member-option:has(input:checked) { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 8%, transparent); }
+    .avatar { width: 30px; height: 30px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center;
+      color: #fff; font-size: .78rem; font-weight: 800; flex-shrink: 0; }
+    .member-name { font-weight: 500; }
+    /* balance */
+    .balance { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); padding: 14px; margin-bottom: 14px; }
+    .balance-bar { height: 12px; border-radius: 999px; overflow: hidden; display: flex; margin: 10px 0 8px; background: var(--border); }
+    .balance-bar > span { display: block; height: 100%; }
+    .seg-me { background: var(--me); } .seg-partner { background: var(--partner); } .seg-open { background: #cbd5e1; }
+    .legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: .8rem; }
+    .legend span { display: inline-flex; align-items: center; gap: 5px; }
+    .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+    .checkin-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); }
+    /* cards */
+    .cat { margin-bottom: 18px; }
+    .cat-head { font-size: .78rem; font-weight: 800; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); margin-bottom: 8px; }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); padding: 12px 14px; margin-bottom: 8px; }
+    .card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+    .card-title { font-weight: 650; }
+    .card-notes { font-size: .85rem; color: var(--muted); margin-top: 4px; white-space: pre-wrap; }
+    .owner-chip { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--border); background: var(--bg);
+      border-radius: 999px; padding: 3px 10px 3px 4px; font-size: .78rem; font-weight: 600; cursor: pointer; margin-top: 8px; }
+    .owner-chip.mine { border-color: var(--me); color: var(--me); }
+    .owner-chip.theirs { border-color: var(--partner); color: var(--partner); }
+    .owner-chip.open { color: var(--muted); }
+    .empty { text-align: center; padding: 40px 18px; color: var(--muted); }
+    /* modal */
+    .modal-backdrop { position: fixed; inset: 0; background: rgba(15,23,42,.45); display: flex; align-items: center; justify-content: center; z-index: 100; padding: 16px; }
+    .modal { background: var(--surface); border-radius: 12px; padding: 20px; width: 100%; max-width: 440px; max-height: 90vh; overflow: auto; box-shadow: 0 20px 50px rgba(15,23,42,.25); }
+    .modal h3 { margin-bottom: 14px; }
+    .field { display: grid; gap: 4px; margin-bottom: 12px; }
+    label { font-size: .74rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); font-weight: 800; }
+    input, textarea, select { width: 100%; border: 1.5px solid var(--border); border-radius: 8px; padding: 9px 11px; font: inherit; background: var(--surface); color: var(--text); }
+    textarea { min-height: 70px; resize: vertical; }
+    input:focus, textarea:focus, select:focus { outline: none; border-color: var(--accent); }
+    .modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 6px; }
+    .error { background: #fee2e2; color: #b91c1c; padding: 9px 12px; border-radius: 8px; margin-bottom: 10px; font-size: .86rem; }
+  </style>
+</head>
+<body>
+  <!-- setup -->
+  <div id="view-setup" class="view">
+    <div class="setup-wrap">
+      <div class="setup-card">
+        <div class="setup-icon">⚖️</div>
+        <h2>Mental Load</h2>
+        <p class="setup-desc">Name the invisible work, see who's carrying it, and rebalance together. Just for the two of you.</p>
+        <span class="pick-label">Who is your partner?</span>
+        <div id="setup-members" style="margin-bottom:18px"></div>
+        <button class="btn" style="width:100%" onclick="savePartner()">Get started</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- main -->
+  <div id="view-main" class="view">
+    <div class="wrap">
+      <div class="header">
+        <div><h1>⚖️ Mental Load</h1><p class="muted tiny">Fair-play, made visible.</p></div>
+        <div style="display:flex;gap:6px;align-items:center">
+          <button class="btn-icon" title="Change partner" onclick="showSetup()">⚙️</button>
+          <button class="btn" onclick="openAddCard()">+ Add</button>
+        </div>
+      </div>
+      <div id="err"></div>
+      <div id="balance"></div>
+      <div id="cards"></div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { esc, initial, memberColor, formatRelativeDate, hubConfirm } from "/hub-sdk.js";
+
+    const CONTEXT = window.__CONTEXT_URL ?? "";
+    const DB = window.__DB_URL ?? "";
+    const ME = window.__CURRENT_MEMBER ?? null;
+    const APP_ID = window.__APP_ID ?? "mental-load";
+
+    const CATEGORIES = [
+      { value: "home", label: "Home & Household" },
+      { value: "meals", label: "Meals & Food" },
+      { value: "kids", label: "Kids & Caregiving" },
+      { value: "finances", label: "Money & Bills" },
+      { value: "social", label: "Social & Family" },
+      { value: "health", label: "Health & Appointments" },
+      { value: "admin", label: "Admin & Errands" },
+      { value: "other", label: "Other" },
+    ];
+    const catLabel = v => (CATEGORIES.find(c => c.value === v) ?? CATEGORIES[CATEGORIES.length - 1]).label;
+
+    let members = [], partner = null, partnerReciprocal = false;
+    let cards = [], lastCheckin = null, modalEl = null, editingCardId = null;
+
+    async function db(sql, params = []) {
+      if (!DB) return { rows: [] };
+      const res = await fetch(DB, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ sql, params }) });
+      const json = await res.json();
+      if (json.error) throw new Error(json.error);
+      return json;
+    }
+
+    async function loadMembers() {
+      if (!CONTEXT) {
+        members = [
+          { id: "demo-1", name: "Alex", role: "adult" },
+          { id: "demo-2", name: "Jordan", role: "adult" },
+          { id: "demo-3", name: "Sam", role: "adult" },
+        ];
+        return;
+      }
+      try { const res = await fetch(`${CONTEXT}?keys=family.members`); members = ((await res.json())["family.members"]) ?? []; }
+      catch { members = []; }
+    }
+
+    async function loadPartner() {
+      if (!ME) return null;
+      try {
+        const res = await fetch(`/run/${APP_ID}/api/partner`);
+        const status = res.ok ? await res.json() : { partner_id: null, reciprocal: false };
+        partnerReciprocal = status.reciprocal;
+        return status.partner_id ? (members.find(m => m.id === status.partner_id) ?? null) : null;
+      } catch { partnerReciprocal = false; return null; }
+    }
+
+    function seedDemo() {
+      cards = [
+        { id: "c1", created_by: "demo-1", title: "Plan weekly meals & groceries", category: "meals", owner_id: "demo-1", owner_name: "Alex", notes: "Menu + list every Sunday.", created_at: nowIso() },
+        { id: "c2", created_by: "demo-2", title: "Remember birthdays & gifts", category: "social", owner_id: "demo-2", owner_name: "Jordan", notes: "", created_at: nowIso() },
+        { id: "c3", created_by: "demo-1", title: "Kids' medical appointments", category: "health", owner_id: "", owner_name: "", notes: "Nobody owns this yet.", created_at: nowIso() },
+        { id: "c4", created_by: "demo-2", title: "Pay bills & track budget", category: "finances", owner_id: "demo-1", owner_name: "Alex", notes: "", created_at: nowIso() },
+      ];
+      lastCheckin = null;
+    }
+
+    async function loadData() {
+      if (!DB || !partner) { seedDemo(); return; }
+      const [c, ck] = await Promise.all([
+        db("SELECT * FROM app_mental_load__cards ORDER BY category ASC, created_at ASC"),
+        db("SELECT * FROM app_mental_load__checkins ORDER BY created_at DESC"),
+      ]);
+      cards = c.rows;
+      lastCheckin = ck.rows[0] ?? null;
+    }
+
+    function nowIso() { return new Date().toISOString(); }
+    function uid(p) { return `${p}-${crypto.randomUUID()}`; }
+    function isMe(id) { return id === ME?.id || id === "demo-1"; }
+
+    /* ── partner setup ── */
+    window.savePartner = async function() {
+      const sel = document.querySelector('#setup-members input[type="radio"]:checked');
+      if (!sel) return;
+      const partnerId = sel.value;
+      const btn = document.querySelector('#view-setup .btn');
+      if (btn) { btn.disabled = true; btn.textContent = "Saving…"; }
+      try {
+        const res = ME ? await fetch(`/run/${APP_ID}/api/partner`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ partner_id: partnerId }) }) : null;
+        if (res && !res.ok) throw new Error((await res.json()).error ?? "Could not save partner");
+        const status = res ? await res.json() : { reciprocal: true };
+        partnerReciprocal = status.reciprocal;
+        partner = members.find(m => m.id === partnerId) ?? null;
+        if (!partnerReciprocal) {
+          if (btn) { btn.disabled = false; btn.textContent = "Check again"; }
+          showWaiting();
+          return;
+        }
+        await loadData();
+        showMain();
+      } catch (e) {
+        if (btn) { btn.disabled = false; btn.textContent = "Get started"; }
+        alertErr(e.message);
+      }
+    };
+
+    function showWaiting() {
+      const name = esc(partner?.name ?? "your partner");
+      openModal(`<h3>Waiting for ${name}</h3>
+        <p class="muted" style="font-size:.9rem;line-height:1.5">You've chosen ${name}. As soon as they choose you back, your shared board appears.</p>
+        <div class="modal-actions"><button class="btn btn-ghost" onclick="closeModal()">Close</button><button class="btn" onclick="closeModal(); savePartner()">Check again</button></div>`);
+    }
+
+    window.showSetup = function() {
+      const others = members.filter(m => m.role === "adult" && m.id !== (ME?.id ?? "demo-1"));
+      document.getElementById("setup-members").innerHTML = others.map(m =>
+        `<label class="member-option"><input type="radio" name="partner" value="${esc(m.id)}" style="width:auto">
+          <span class="avatar" style="background:${memberColor(m.id, members)}">${esc(initial(m.name))}</span>
+          <span class="member-name">${esc(m.name)}</span></label>`).join("") || `<p class="muted tiny">No other adults in the household yet.</p>`;
+      if (partner) { const r = document.querySelector(`#setup-members input[value="${CSS.escape(partner.id)}"]`); if (r) r.checked = true; }
+      document.getElementById("view-setup").classList.add("active");
+      document.getElementById("view-main").classList.remove("active");
+    };
+    function showMain() {
+      document.getElementById("view-setup").classList.remove("active");
+      document.getElementById("view-main").classList.add("active");
+      render();
+    }
+
+    /* ── modal ── */
+    function openModal(html) {
+      closeModal();
+      modalEl = document.createElement("div");
+      modalEl.className = "modal-backdrop";
+      modalEl.innerHTML = `<div class="modal">${html}</div>`;
+      modalEl.addEventListener("click", e => { if (e.target === modalEl) closeModal(); });
+      document.body.appendChild(modalEl);
+      const f = modalEl.querySelector("[data-autofocus]"); if (f) f.focus();
+    }
+    window.closeModal = function() { modalEl?.remove(); modalEl = null; };
+    function alertErr(msg) { const el = document.getElementById("err"); if (el) el.innerHTML = `<div class="error">${esc(msg)}</div>`; }
+
+    /* ── add / edit card ── */
+    window.openAddCard = function(id) {
+      editingCardId = id ?? null;
+      const c = id ? cards.find(x => x.id === id) : null;
+      const opts = CATEGORIES.map(o => `<option value="${o.value}" ${c?.category === o.value ? "selected" : ""}>${esc(o.label)}</option>`).join("");
+      const meName = ME?.name ?? "Me";
+      const pName = partner?.name ?? "Partner";
+      const ownerOpts = `
+        <option value="" ${!c?.owner_id ? "selected" : ""}>Unassigned</option>
+        <option value="${esc(ME?.id ?? "demo-1")}" ${isMe(c?.owner_id) && c?.owner_id ? "selected" : ""}>${esc(meName)}</option>
+        <option value="${esc(partner?.id ?? "demo-2")}" ${c && c.owner_id && !isMe(c.owner_id) ? "selected" : ""}>${esc(pName)}</option>`;
+      openModal(`
+        <h3>${c ? "Edit domain" : "New domain"}</h3>
+        <div class="field"><label for="f-title">What needs owning?</label>
+          <input id="f-title" data-autofocus placeholder="e.g. Plan the kids' birthdays" value="${c ? esc(c.title) : ""}"></div>
+        <div class="field"><label for="f-cat">Category</label><select id="f-cat">${opts}</select></div>
+        <div class="field"><label for="f-owner">Who holds it?</label><select id="f-owner">${ownerOpts}</select></div>
+        <div class="field"><label for="f-notes">Notes</label><textarea id="f-notes" placeholder="What the full job actually includes">${c ? esc(c.notes) : ""}</textarea></div>
+        <div class="modal-actions">
+          <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+          <button class="btn" onclick="submitCard()">${c ? "Save" : "Add"}</button>
+        </div>`);
+    };
+
+    window.submitCard = async function() {
+      const id = editingCardId;
+      const title = document.getElementById("f-title").value.trim();
+      if (!title) { document.getElementById("f-title").focus(); return; }
+      const category = document.getElementById("f-cat").value;
+      const ownerId = document.getElementById("f-owner").value;
+      const ownerName = ownerId ? (isMe(ownerId) ? (ME?.name ?? "Me") : (partner?.name ?? "Partner")) : "";
+      const btn = modalEl.querySelector(".modal-actions .btn:last-child"); btn.disabled = true; btn.textContent = "Saving…";
+      const notes = document.getElementById("f-notes").value.trim();
+      try {
+        if (id) {
+          const c = cards.find(x => x.id === id);
+          if (DB && partner) await db("UPDATE app_mental_load__cards SET title=?, category=?, owner_id=?, owner_name=?, notes=?, updated_at=? WHERE id=?",
+            [title, category, ownerId, ownerName, notes, nowIso(), id]);
+          Object.assign(c, { title, category, owner_id: ownerId, owner_name: ownerName, notes });
+        } else {
+          const row = { id: uid("c"), created_by: ME?.id ?? "demo-1", session_id: "", title, category, owner_id: ownerId, owner_name: ownerName, notes, created_at: nowIso() };
+          if (DB && partner) await db("INSERT INTO app_mental_load__cards (id, created_by, session_id, title, category, owner_id, owner_name, notes, created_at) VALUES (?,?,?,?,?,?,?,?,?)",
+            [row.id, row.created_by, row.session_id, row.title, row.category, row.owner_id, row.owner_name, row.notes, row.created_at]);
+          cards = [...cards, row];
+        }
+        closeModal(); render();
+      } catch (e) { btn.disabled = false; btn.textContent = id ? "Save" : "Add"; alertErr(e.message); }
+    };
+
+    // cycle owner: unassigned → me → partner → unassigned
+    window.cycleOwner = async function(id) {
+      const c = cards.find(x => x.id === id); if (!c) return;
+      const meId = ME?.id ?? "demo-1", pId = partner?.id ?? "demo-2";
+      let next, nextName;
+      if (!c.owner_id) { next = meId; nextName = ME?.name ?? "Me"; }
+      else if (isMe(c.owner_id)) { next = pId; nextName = partner?.name ?? "Partner"; }
+      else { next = ""; nextName = ""; }
+      try {
+        if (DB && partner) await db("UPDATE app_mental_load__cards SET owner_id=?, owner_name=?, updated_at=? WHERE id=?", [next, nextName, nowIso(), id]);
+        c.owner_id = next; c.owner_name = nextName; render();
+      } catch (e) { alertErr(e.message); }
+    };
+
+    window.deleteCard = async function(id) {
+      if (!(await hubConfirm({ message: "Delete this domain?", destructive: true, confirmLabel: "Delete" }))) return;
+      try {
+        if (DB && partner) await db("DELETE FROM app_mental_load__cards WHERE id=?", [id]);
+        cards = cards.filter(x => x.id !== id); render();
+      } catch (e) { alertErr(e.message); }
+    };
+
+    window.openCheckin = function() {
+      openModal(`<h3>Rebalance check-in</h3>
+        <p class="muted" style="font-size:.88rem;margin-bottom:12px">Talk it through, then note what you agreed to shift.</p>
+        <div class="field"><label for="f-cknote">What changed?</label><textarea id="f-cknote" data-autofocus placeholder="e.g. Jordan takes over meal planning; Alex takes bills."></textarea></div>
+        <div class="modal-actions"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button><button class="btn" onclick="submitCheckin()">Log check-in</button></div>`);
+    };
+    window.submitCheckin = async function() {
+      const note = document.getElementById("f-cknote").value.trim();
+      const btn = modalEl.querySelector(".modal-actions .btn:last-child"); btn.disabled = true; btn.textContent = "Saving…";
+      const row = { id: uid("ck"), created_by: ME?.id ?? "demo-1", created_by_name: ME?.name ?? "Me", session_id: "", note, created_at: nowIso() };
+      try {
+        if (DB && partner) await db("INSERT INTO app_mental_load__checkins (id, created_by, created_by_name, session_id, note, created_at) VALUES (?,?,?,?,?,?)",
+          [row.id, row.created_by, row.created_by_name, row.session_id, row.note, row.created_at]);
+        lastCheckin = row;
+        closeModal(); render();
+      } catch (e) { btn.disabled = false; btn.textContent = "Log check-in"; alertErr(e.message); }
+    };
+
+    /* ── render ── */
+    function render() {
+      const meCount = cards.filter(c => c.owner_id && isMe(c.owner_id)).length;
+      const pCount = cards.filter(c => c.owner_id && !isMe(c.owner_id)).length;
+      const openCount = cards.filter(c => !c.owner_id).length;
+      const total = cards.length || 1;
+      const meName = ME?.name ?? "You", pName = partner?.name ?? "Partner";
+      document.getElementById("err").innerHTML = "";
+      document.getElementById("balance").innerHTML = `
+        <div class="balance">
+          <strong>Who's carrying what</strong>
+          <div class="balance-bar">
+            <span class="seg-me" style="width:${meCount / total * 100}%"></span>
+            <span class="seg-partner" style="width:${pCount / total * 100}%"></span>
+            <span class="seg-open" style="width:${openCount / total * 100}%"></span>
+          </div>
+          <div class="legend">
+            <span><span class="dot" style="background:var(--me)"></span>${esc(meName)} · ${meCount}</span>
+            <span><span class="dot" style="background:var(--partner)"></span>${esc(pName)} · ${pCount}</span>
+            <span><span class="dot" style="background:#cbd5e1"></span>Unassigned · ${openCount}</span>
+          </div>
+          <div class="checkin-row">
+            <span class="muted tiny">${lastCheckin ? `Last rebalanced ${esc(formatRelativeDate(lastCheckin.created_at))}` : "No check-ins yet"}</span>
+            <button class="btn btn-ghost btn-sm" onclick="openCheckin()">Rebalance</button>
+          </div>
+        </div>`;
+
+      const el = document.getElementById("cards");
+      if (!cards.length) { el.innerHTML = `<div class="empty">No domains yet. Add the first invisible job you both juggle.</div>`; return; }
+      const byCat = CATEGORIES.map(cat => ({ cat, items: cards.filter(c => c.category === cat.value) })).filter(g => g.items.length);
+      el.innerHTML = byCat.map(g => `
+        <div class="cat">
+          <div class="cat-head">${esc(g.cat.label)}</div>
+          ${g.items.map(renderCard).join("")}
+        </div>`).join("");
+    }
+
+    function renderCard(c) {
+      const cls = !c.owner_id ? "open" : isMe(c.owner_id) ? "mine" : "theirs";
+      const ownerLabel = c.owner_id ? esc(c.owner_name || "Owner") : "Assign owner";
+      return `
+        <div class="card">
+          <div class="card-top">
+            <div style="flex:1">
+              <div class="card-title">${esc(c.title)}</div>
+              ${c.notes ? `<div class="card-notes">${esc(c.notes)}</div>` : ""}
+              <span class="owner-chip ${cls}" data-act="cycle" data-id="${esc(c.id)}" title="Tap to reassign">
+                ${c.owner_id ? `<span class="avatar" style="width:20px;height:20px;font-size:.68rem;background:${isMe(c.owner_id) ? "var(--me)" : "var(--partner)"}">${esc(initial(c.owner_name || "?"))}</span>` : "➕ "}${ownerLabel}
+              </span>
+            </div>
+            <div style="display:flex;gap:2px">
+              <button class="btn-icon" title="Edit" data-act="edit" data-id="${esc(c.id)}">✏️</button>
+              <button class="btn-icon" title="Delete" data-act="del" data-id="${esc(c.id)}">🗑️</button>
+            </div>
+          </div>
+        </div>`;
+    }
+
+    document.addEventListener("click", e => {
+      const t = e.target.closest("[data-act]");
+      if (!t) return;
+      const id = t.dataset.id;
+      if (t.dataset.act === "cycle") window.cycleOwner(id);
+      else if (t.dataset.act === "edit") window.openAddCard(id);
+      else if (t.dataset.act === "del") window.deleteCard(id);
+    });
+
+    (async () => {
+      await loadMembers();
+      partner = await loadPartner();
+      if (!ME && !CONTEXT) { partner = members[1]; partnerReciprocal = true; }
+      if (!partner || !partnerReciprocal) { showSetup(); }
+      else { await loadData(); showMain(); }
+    })();
+  </script>
+</body>
+</html>
