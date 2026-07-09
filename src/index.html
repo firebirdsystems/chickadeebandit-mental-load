@@ -111,23 +111,12 @@
 
   <script type="module">
     import { esc, initial, memberColor, formatRelativeDate, hubConfirm } from "/hub-sdk.js";
+    import { CATEGORIES, isMe as isMeOf, computeBalance, cardsByCategory } from "./logic.js";
 
     const CONTEXT = window.__CONTEXT_URL ?? "";
     const DB = window.__DB_URL ?? "";
     const ME = window.__CURRENT_MEMBER ?? null;
     const APP_ID = window.__APP_ID ?? "mental-load";
-
-    const CATEGORIES = [
-      { value: "home", label: "Home & Household" },
-      { value: "meals", label: "Meals & Food" },
-      { value: "kids", label: "Kids & Caregiving" },
-      { value: "finances", label: "Money & Bills" },
-      { value: "social", label: "Social & Family" },
-      { value: "health", label: "Health & Appointments" },
-      { value: "admin", label: "Admin & Errands" },
-      { value: "other", label: "Other" },
-    ];
-    const catLabel = v => (CATEGORIES.find(c => c.value === v) ?? CATEGORIES[CATEGORIES.length - 1]).label;
 
     let members = [], partner = null, partnerReciprocal = false;
     let cards = [], lastCheckin = null, modalEl = null, editingCardId = null;
@@ -185,7 +174,7 @@
 
     function nowIso() { return new Date().toISOString(); }
     function uid(p) { return `${p}-${crypto.randomUUID()}`; }
-    function isMe(id) { return id === ME?.id || id === "demo-1"; }
+    function isMe(id) { return isMeOf(id, ME?.id); }
 
     /* ── partner setup ── */
     window.savePartner = async function() {
@@ -340,10 +329,7 @@
 
     /* ── render ── */
     function render() {
-      const meCount = cards.filter(c => c.owner_id && isMe(c.owner_id)).length;
-      const pCount = cards.filter(c => c.owner_id && !isMe(c.owner_id)).length;
-      const openCount = cards.filter(c => !c.owner_id).length;
-      const total = cards.length || 1;
+      const { meCount, pCount, openCount, total } = computeBalance(cards, ME?.id);
       const meName = ME?.name ?? "You", pName = partner?.name ?? "Partner";
       document.getElementById("err").innerHTML = "";
       document.getElementById("balance").innerHTML = `
@@ -367,7 +353,7 @@
 
       const el = document.getElementById("cards");
       if (!cards.length) { el.innerHTML = `<div class="empty">No domains yet. Add the first invisible job you both juggle.</div>`; return; }
-      const byCat = CATEGORIES.map(cat => ({ cat, items: cards.filter(c => c.category === cat.value) })).filter(g => g.items.length);
+      const byCat = cardsByCategory(cards);
       el.innerHTML = byCat.map(g => `
         <div class="cat">
           <div class="cat-head">${esc(g.cat.label)}</div>
