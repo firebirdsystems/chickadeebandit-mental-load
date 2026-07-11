@@ -1,7 +1,7 @@
 {
   "id": "mental-load",
   "name": "Mental Load",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A fair-play tracker for couples: name the invisible domains someone has to own — planning meals, remembering birthdays, booking checkups — see who holds what, and rebalance together.",
   "entrypoint": "index.html",
   "runtime": "static",
@@ -52,7 +52,8 @@
       "partner_id_column": "partner_id",
       "session_column": "session_id",
       "partner_session_id_column": "session_id",
-      "require_reciprocal": true
+      "require_reciprocal": true,
+      "retain_days": { "default": 365, "timestamp_column": "created_at", "override_key": "checkin_history" }
     }
   },
   "nav": { "label": "Mental Load" },
