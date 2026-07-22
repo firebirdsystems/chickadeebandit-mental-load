@@ -1,5 +1,6 @@
 {
   "id": "mental-load",
+  "contexts": ["household", "shared_space"],
   "name": "Mental Load",
   "version": "1.1.0",
   "description": "A fair-play tracker for couples: name the invisible domains someone has to own — planning meals, remembering birthdays, booking checkups — see who holds what, and rebalance together.",
