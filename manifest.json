@@ -26,6 +26,17 @@
     "session_id_column": "session_id",
     "require_role": "adult"
   },
+  "member_references": {
+    "partner_config": [
+      { "column": "member_id", "on_removed": "delete", "id_column": "rowid" },
+      { "column": "partner_id", "on_removed": "delete", "id_column": "rowid" }
+    ],
+    "cards": [
+      { "column": "created_by", "on_removed": "keep" },
+      { "column": "owner_id", "on_removed": "null" }
+    ],
+    "checkins": { "column": "created_by", "on_removed": "keep" }
+  },
   "row_policies": {
     "partner_config": {
       "kind": "owner_only",
@@ -58,6 +69,7 @@
     }
   },
   "nav": { "label": "Mental Load" },
+  "kiosk": "never",
   "resource_limits": {
     "max_db_bytes": 26214400
   }
