@@ -35,3 +35,12 @@ export function cardsByCategory(cards) {
     .map(cat => ({ cat, items: cards.filter(c => c.category === cat.value) }))
     .filter(g => g.items.length);
 }
+
+/**
+ * Fields the in-app search matches against (see hub-sdk `searchMatch`).
+ * Notes and category count as well as the title — the point of the
+ * app is naming invisible work, and the detail lives in the notes.
+ */
+export function searchableFields(item) {
+  return [item.title, item.category, item.notes, item.owner_name];
+}

@@ -76,6 +76,13 @@
     input:focus, textarea:focus, select:focus { outline: none; border-color: var(--accent); }
     .modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 6px; }
     .error { background: #fee2e2; color: #b91c1c; padding: 9px 12px; border-radius: 8px; margin-bottom: 10px; font-size: .86rem; }
+    .search-row { margin-bottom: 12px; }
+    .search-input {
+      width: 100%; border: 1.5px solid var(--border-mid, var(--border, #d1d5db));
+      border-radius: 8px; padding: 9px 11px; font: inherit;
+      background: var(--surface, var(--card, #fff)); color: var(--text, inherit);
+    }
+    .search-input:focus { outline: none; border-color: var(--accent, #6366f1); }
   </style>
 </head>
 <body>
@@ -105,13 +112,16 @@
       </div>
       <div id="err"></div>
       <div id="balance"></div>
+      <div class="search-row" id="search-row" style="display:none">
+        <input id="search" class="search-input" type="search" placeholder="Search domains…" aria-label="Search domains" />
+      </div>
       <div id="cards"></div>
     </div>
   </div>
 
   <script type="module">
-    import { esc, initial, memberColor, formatRelativeDate, hubConfirm } from "/hub-sdk.js";
-    import { CATEGORIES, isMe as isMeOf, computeBalance, cardsByCategory } from "./logic.js";
+    import { esc, initial, memberColor, formatRelativeDate, hubConfirm, searchMatch } from "/hub-sdk.js";
+    import { CATEGORIES, isMe as isMeOf, computeBalance, cardsByCategory, searchableFields } from "./logic.js";
 
     const CONTEXT = window.__CONTEXT_URL ?? "";
     const DB = window.__DB_URL ?? "";
@@ -120,6 +130,7 @@
 
     let members = [], partner = null, partnerReciprocal = false;
     let cards = [], lastCheckin = null, modalEl = null, editingCardId = null;
+let searchQ = "";       // in-app search (see logic.js searchableFields)
 
     async function db(sql, params = []) {
       if (!DB) return { rows: [] };
@@ -328,6 +339,13 @@
     };
 
     /* ── render ── */
+    // Only the card board is redrawn, so the search box keeps focus.
+    document.addEventListener("input", (e) => {
+      if (e.target.id !== "search") return;
+      searchQ = e.target.value;
+      render();
+    });
+
     function render() {
       const { meCount, pCount, openCount, total } = computeBalance(cards, ME?.id);
       const meName = ME?.name ?? "You", pName = partner?.name ?? "Partner";
@@ -352,8 +370,13 @@
         </div>`;
 
       const el = document.getElementById("cards");
+      // Only worth offering the box once there is a board to search.
+      const searchRow = document.getElementById("search-row");
+      if (searchRow) searchRow.style.display = cards.length ? "" : "none";
       if (!cards.length) { el.innerHTML = `<div class="empty">No domains yet. Add the first invisible job you both juggle.</div>`; return; }
-      const byCat = cardsByCategory(cards);
+      const shown = searchQ ? cards.filter(c => searchMatch(searchQ, searchableFields(c))) : cards;
+      if (!shown.length) { el.innerHTML = `<div class="empty">Nothing matches "${esc(searchQ)}".</div>`; return; }
+      const byCat = cardsByCategory(shown);
       el.innerHTML = byCat.map(g => `
         <div class="cat">
           <div class="cat-head">${esc(g.cat.label)}</div>

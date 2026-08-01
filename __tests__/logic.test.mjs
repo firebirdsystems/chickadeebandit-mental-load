@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { CATEGORIES, catLabel, isMe, computeBalance, cardsByCategory } from "../src/logic.js";
+import { CATEGORIES, catLabel, isMe, computeBalance, cardsByCategory, searchableFields } from "../src/logic.js";
 
 describe("catLabel", () => {
   it("resolves a known category", () => expect(catLabel("meals")).toBe("Meals & Food"));
@@ -46,5 +46,13 @@ describe("cardsByCategory", () => {
 describe("CATEGORIES", () => {
   it("ends with Other as the fallback", () => {
     expect(CATEGORIES[CATEGORIES.length - 1].value).toBe("other");
+  });
+});
+
+describe("searchableFields", () => {
+  it("matches on the notes and category, not just the card title", () => {
+    const fields = searchableFields({ title: "School admin", category: "kids", notes: "forms, trips, parents evening", owner_name: "Ada" });
+    expect(fields).toContain("forms, trips, parents evening");
+    expect(fields).toContain("kids");
   });
 });
