@@ -68,6 +68,13 @@
       "retain_days": { "default": 365, "timestamp_column": "created_at", "override_key": "checkin_history" }
     }
   },
+  "glance": {
+    "source": {
+      "kind": "sql",
+      "query": "SELECT COUNT(*) AS n FROM app_mental_load__cards WHERE owner_id IS NULL OR owner_id = '' LIMIT 1"
+    },
+    "display": { "template": "badge", "count": "n", "label": "cards nobody owns", "severity": "warn" }
+  },
   "nav": { "label": "Mental Load" },
   "kiosk": "never",
   "resource_limits": {
