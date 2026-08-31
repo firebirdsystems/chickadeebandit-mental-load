@@ -87,7 +87,7 @@
 </head>
 <body>
   <!-- setup -->
-  <div id="view-setup" class="view">
+  <div id="view-setup" class="view" data-testid="view-setup">
     <div class="setup-wrap">
       <div class="setup-card">
         <div class="setup-icon">⚖️</div>
@@ -101,7 +101,7 @@
   </div>
 
   <!-- main -->
-  <div id="view-main" class="view">
+  <div id="view-main" class="view" data-testid="view-main">
     <div class="wrap">
       <div class="header">
         <div><h1>⚖️ Mental Load</h1><p class="muted tiny">Fair-play, made visible.</p></div>
@@ -359,9 +359,9 @@ let searchQ = "";       // in-app search (see logic.js searchableFields)
             <span class="seg-open" style="width:${openCount / total * 100}%"></span>
           </div>
           <div class="legend">
-            <span><span class="dot" style="background:var(--me)"></span>${esc(meName)} · ${meCount}</span>
-            <span><span class="dot" style="background:var(--partner)"></span>${esc(pName)} · ${pCount}</span>
-            <span><span class="dot" style="background:#cbd5e1"></span>Unassigned · ${openCount}</span>
+            <span><span class="dot" style="background:var(--me)"></span>${esc(meName)} · <span data-testid="balance-me">${meCount}</span></span>
+            <span><span class="dot" style="background:var(--partner)"></span>${esc(pName)} · <span data-testid="balance-partner">${pCount}</span></span>
+            <span><span class="dot" style="background:#cbd5e1"></span>Unassigned · <span data-testid="balance-open">${openCount}</span></span>
           </div>
           <div class="checkin-row">
             <span class="muted tiny">${lastCheckin ? `Last rebalanced ${esc(formatRelativeDate(lastCheckin.created_at))}` : "No check-ins yet"}</span>
@@ -388,12 +388,12 @@ let searchQ = "";       // in-app search (see logic.js searchableFields)
       const cls = !c.owner_id ? "open" : isMe(c.owner_id) ? "mine" : "theirs";
       const ownerLabel = c.owner_id ? esc(c.owner_name || "Owner") : "Assign owner";
       return `
-        <div class="card">
+        <div class="card" data-testid="card" data-card-id="${esc(c.id)}">
           <div class="card-top">
             <div style="flex:1">
               <div class="card-title">${esc(c.title)}</div>
               ${c.notes ? `<div class="card-notes">${esc(c.notes)}</div>` : ""}
-              <span class="owner-chip ${cls}" data-act="cycle" data-id="${esc(c.id)}" title="Tap to reassign">
+              <span class="owner-chip ${cls}" data-testid="owner-chip" data-owner="${cls}" data-act="cycle" data-id="${esc(c.id)}" title="Tap to reassign">
                 ${c.owner_id ? `<span class="avatar" style="width:20px;height:20px;font-size:.68rem;background:${isMe(c.owner_id) ? "var(--me)" : "var(--partner)"}">${esc(initial(c.owner_name || "?"))}</span>` : "➕ "}${ownerLabel}
               </span>
             </div>
