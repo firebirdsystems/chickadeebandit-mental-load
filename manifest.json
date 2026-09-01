@@ -12,7 +12,7 @@
   "storage": "db",
   "preload": {
     "cards": {"sql": "SELECT * FROM app_mental_load__cards ORDER BY category ASC, created_at ASC"},
-    "checkins": {"sql": "SELECT * FROM app_mental_load__checkins ORDER BY created_at DESC"}
+    "checkins": {"sql": "SELECT * FROM app_mental_load__checkins ORDER BY created_at DESC, id DESC LIMIT 1"}
   },
   "db_plaintext_columns": ["category"],
   "data_access": {

@@ -177,7 +177,7 @@ let searchQ = "";       // in-app search (see logic.js searchableFields)
       if (!DB || !partner) { seedDemo(); return; }
       const [c, ck] = await Promise.all([
         db("SELECT * FROM app_mental_load__cards ORDER BY category ASC, created_at ASC"),
-        db("SELECT * FROM app_mental_load__checkins ORDER BY created_at DESC"),
+        db("SELECT * FROM app_mental_load__checkins ORDER BY created_at DESC, id DESC LIMIT 1"),
       ]);
       cards = c.rows;
       lastCheckin = ck.rows[0] ?? null;
