@@ -12,7 +12,7 @@
       --border: var(--hub-border, #e5e7eb); --text: var(--hub-text, #000000);
       --muted: var(--hub-text-muted, #6b7280); --accent: var(--hub-primary, #db2777);
       --accent-fg: var(--hub-primary-fg, #fff); --radius: var(--hub-radius, 8px);
-      --me: #db2777; --partner: #2563eb; --shadow: 0 1px 3px rgba(15,23,42,.07);
+      --me: #db2777; --me-ink: var(--hub-tint-danger-fg, #db2777); --partner: #2563eb; --partner-ink: var(--hub-tint-info-fg, #2563eb); --shadow: 0 1px 3px rgba(15,23,42,.07);
     }
     body { font-family: var(--hub-font, system-ui, sans-serif); font-size: var(--hub-font-size, 15px);
       background: var(--bg); color: var(--text); min-height: 100vh; line-height: 1.5; }
@@ -61,8 +61,8 @@
     .card-notes { font-size: .85rem; color: var(--muted); margin-top: 4px; white-space: pre-wrap; }
     .owner-chip { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--border); background: var(--bg);
       border-radius: 999px; padding: 3px 10px 3px 4px; font-size: .78rem; font-weight: 600; cursor: pointer; margin-top: 8px; }
-    .owner-chip.mine { border-color: var(--me); color: var(--me); }
-    .owner-chip.theirs { border-color: var(--partner); color: var(--partner); }
+    .owner-chip.mine { border-color: var(--me); color: var(--me-ink); }
+    .owner-chip.theirs { border-color: var(--partner); color: var(--partner-ink); }
     .owner-chip.open { color: var(--muted); }
     .empty { text-align: center; padding: 40px 18px; color: var(--muted); }
     /* modal */
@@ -75,7 +75,7 @@
     textarea { min-height: 70px; resize: vertical; }
     input:focus, textarea:focus, select:focus { outline: none; border-color: var(--accent); }
     .modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 6px; }
-    .error { background: #fee2e2; color: #b91c1c; padding: 9px 12px; border-radius: 8px; margin-bottom: 10px; font-size: .86rem; }
+    .error { background: var(--hub-tint-danger, #fee2e2); color: var(--hub-tint-danger-fg, #b91c1c); padding: 9px 12px; border-radius: 8px; margin-bottom: 10px; font-size: .86rem; }
     .search-row { margin-bottom: 12px; }
     .search-input {
       width: 100%; border: 1.5px solid var(--border-mid, var(--border, #d1d5db));
