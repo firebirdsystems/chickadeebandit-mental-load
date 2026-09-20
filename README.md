@@ -1,5 +1,7 @@
 # Mental Load
 
+A [Chickadee Bandit](https://chickadeebandit.com/app-library/mental-load) app.
+
 A fair-play tracker for couples, based on the *Fair Play* model. Chores apps track task
 *execution* — Mental Load tracks *ownership* of the invisible domains: planning meals,
 remembering birthdays, booking the kids' checkups, staying on top of bills.
