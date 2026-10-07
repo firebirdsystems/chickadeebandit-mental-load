@@ -33,7 +33,7 @@
     /* setup */
     .setup-wrap { display: flex; align-items: center; justify-content: center; min-height: 80vh; padding: 40px 18px; }
     .setup-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 30px; max-width: 420px; width: 100%; text-align: center; box-shadow: var(--shadow); }
-    .setup-icon { font-size: 2.4rem; margin-bottom: 14px; }
+    .setup-icon { margin-bottom: 14px; }
     .setup-card h2 { font-size: 1.2rem; margin-bottom: 6px; }
     .setup-desc { color: var(--muted); font-size: .9rem; margin-bottom: 22px; }
     .pick-label { font-weight: 700; margin-bottom: 10px; text-align: left; display: block; font-size: .85rem; }
@@ -90,7 +90,7 @@
   <div id="view-setup" class="view" data-testid="view-setup">
     <div class="setup-wrap">
       <div class="setup-card">
-        <div class="setup-icon">⚖️</div>
+        <div class="setup-icon" id="setup-art"></div>
         <h2>Mental Load</h2>
         <p class="setup-desc">Name the invisible work, see who's carrying it, and rebalance together. Just for the two of you.</p>
         <span class="pick-label">Who is your partner?</span>
@@ -104,9 +104,9 @@
   <div id="view-main" class="view" data-testid="view-main">
     <div class="wrap">
       <div class="header">
-        <div><h1>⚖️ Mental Load</h1><p class="muted tiny">Fair-play, made visible.</p></div>
+        <div><h1><span id="page-glyph"></span> Mental Load</h1><p class="muted tiny">Fair-play, made visible.</p></div>
         <div style="display:flex;gap:6px;align-items:center">
-          <button class="btn-icon" title="Change partner" onclick="showSetup()">⚙️</button>
+          <button class="btn-icon" id="change-partner-btn" title="Change partner" aria-label="Change partner" onclick="showSetup()"></button>
           <button class="btn" onclick="openAddCard()">+ Add</button>
         </div>
       </div>
@@ -120,8 +120,13 @@
   </div>
 
   <script type="module">
-    import { esc, initial, memberColor, formatRelativeDate, hubConfirm, searchMatch } from "/hub-sdk.js";
+    import { esc, initial, memberColor, formatRelativeDate, hubConfirm, searchMatch, glyph, chickadee } from "/hub-sdk.js";
     import { CATEGORIES, isMe as isMeOf, computeBalance, cardsByCategory, searchableFields } from "./logic.js";
+
+    // Static markup cannot call the SDK, so these marks are drawn here.
+    document.getElementById("setup-art").innerHTML = chickadee("pair", { size: 80 });
+    document.getElementById("page-glyph").innerHTML = glyph("scales");
+    document.getElementById("change-partner-btn").innerHTML = glyph("gear");
 
     const CONTEXT = window.__CONTEXT_URL ?? "";
     const DB = window.__DB_URL ?? "";
@@ -394,12 +399,12 @@ let searchQ = "";       // in-app search (see logic.js searchableFields)
               <div class="card-title">${esc(c.title)}</div>
               ${c.notes ? `<div class="card-notes">${esc(c.notes)}</div>` : ""}
               <span class="owner-chip ${cls}" data-testid="owner-chip" data-owner="${cls}" data-act="cycle" data-id="${esc(c.id)}" title="Tap to reassign">
-                ${c.owner_id ? `<span class="avatar" style="width:20px;height:20px;font-size:.68rem;background:${isMe(c.owner_id) ? "var(--me)" : "var(--partner)"}">${esc(initial(c.owner_name || "?"))}</span>` : "➕ "}${ownerLabel}
+                ${c.owner_id ? `<span class="avatar" style="width:20px;height:20px;font-size:.68rem;background:${isMe(c.owner_id) ? "var(--me)" : "var(--partner)"}">${esc(initial(c.owner_name || "?"))}</span>` : `${glyph("plus")} `}${ownerLabel}
               </span>
             </div>
             <div style="display:flex;gap:2px">
-              <button class="btn-icon" title="Edit" data-act="edit" data-id="${esc(c.id)}">✏️</button>
-              <button class="btn-icon" title="Delete" data-act="del" data-id="${esc(c.id)}">🗑️</button>
+              <button class="btn-icon" title="Edit" aria-label="Edit" data-act="edit" data-id="${esc(c.id)}">${glyph("pencil")}</button>
+              <button class="btn-icon" title="Delete" aria-label="Delete" data-act="del" data-id="${esc(c.id)}">${glyph("trash")}</button>
             </div>
           </div>
         </div>`;
