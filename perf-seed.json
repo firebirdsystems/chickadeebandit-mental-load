@@ -1,0 +1,1045 @@
+{
+  "seed": [
+    {
+      "sql": "INSERT INTO app_mental_load__partner_config (member_id, partner_id, session_id, created_at) VALUES (?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-150 days'))",
+      "params": [
+        "{{me}}",
+        "{{partner}}",
+        "perf-sess-couple"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__partner_config (member_id, partner_id, session_id, created_at) VALUES (?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-150 days'))",
+      "params": [
+        "{{partner}}",
+        "{{me}}",
+        "perf-sess-couple"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__cards (id, created_by, session_id, title, category, owner_id, owner_name, notes, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-139 days','-1 minutes'))",
+      "params": [
+        "perf-card-01",
+        "{{me}}",
+        "perf-sess-couple",
+        "Laundry start to finish",
+        "home",
+        "{{partner}}",
+        "Jordan",
+        "Nobody owns this yet."
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__cards (id, created_by, session_id, title, category, owner_id, owner_name, notes, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-138 days','-2 minutes'))",
+      "params": [
+        "perf-card-02",
+        "{{me}}",
+        "perf-sess-couple",
+        "Take out trash and recycling",
+        "home",
+        "{{me}}",
+        "Alex",
+        "Alternate weeks."
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__cards (id, created_by, session_id, title, category, owner_id, owner_name, notes, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-137 days','-3 minutes'))",
+      "params": [
+        "perf-card-03",
+        "{{partner}}",
+        "perf-sess-couple",
+        "Clean the bathrooms",
+        "home",
+        "{{partner}}",
+        "Jordan",
+        "Usually falls to whoever is home first."
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__cards (id, created_by, session_id, title, category, owner_id, owner_name, notes, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-136 days','-4 minutes'), strftime('%Y-%m-%dT%H:%M:%fZ','now','-86 days'))",
+      "params": [
+        "perf-card-04",
+        "{{me}}",
+        "perf-sess-couple",
+        "Vacuum and mop",
+        "home",
+        "{{me}}",
+        "Alex",
+        "Takes about an hour a week."
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__cards (id, created_by, session_id, title, category, notes, created_at) VALUES (?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-135 days','-5 minutes'))",
+      "params": [
+        "perf-card-05",
+        "{{me}}",
+        "perf-sess-couple",
+        "Water the plants",
+        "home",
+        "Set a reminder for the first of the month."
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__cards (id, created_by, session_id, title, category, owner_id, owner_name, notes, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-134 days','-6 minutes'))",
+      "params": [
+        "perf-card-06",
+        "{{partner}}",
+        "perf-sess-couple",
+        "Change the bed sheets",
+        "home",
+        "{{me}}",
+        "Alex",
+        "Let's revisit at the next check-in."
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__cards (id, created_by, session_id, title, category, owner_id, owner_name, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-133 days','-7 minutes'))",
+      "params": [
+        "perf-card-07",
+        "{{me}}",
+        "perf-sess-couple",
+        "Restock cleaning supplies",
+        "home",
+        "{{partner}}",
+        "Jordan"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__cards (id, created_by, session_id, title, category, owner_id, owner_name, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-132 days','-8 minutes'), strftime('%Y-%m-%dT%H:%M:%fZ','now','-82 days'))",
+      "params": [
+        "perf-card-08",
+        "{{me}}",
+        "perf-sess-couple",
+        "Yard work and mowing",
+        "home",
+        "{{me}}",
+        "Alex"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__cards (id, created_by, session_id, title, category, owner_id, owner_name, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-131 days','-9 minutes'))",
+      "params": [
+        "perf-card-09",
+        "{{partner}}",
+        "perf-sess-couple",
+        "Schedule home repairs",
+        "home",
+        "{{partner}}",
+        "Jordan"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__cards (id, created_by, session_id, title, category, owner_id, owner_name, notes, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-130 days','-10 minutes'))",
+      "params": [
+        "perf-card-10",
+        "{{me}}",
+        "perf-sess-couple",
+        "Seasonal clothes swap",
+        "home",
+        "{{me}}",
+        "Alex",
+        "Menu and list every Sunday."
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__cards (id, created_by, session_id, title, category, owner_id, owner_name, notes, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-129 days','-11 minutes'))",
+      "params": [
+        "perf-card-11",
+        "{{me}}",
+        "perf-sess-couple",
+        "Deep-clean the fridge",
+        "home",
+        "{{partner}}",
+        "Jordan",
+        "Nobody owns this yet."
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__cards (id, created_by, session_id, title, category, owner_id, owner_name, notes, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-128 days','-12 minutes'), strftime('%Y-%m-%dT%H:%M:%fZ','now','-78 days'))",
+      "params": [
+        "perf-card-12",
+        "{{partner}}",
+        "perf-sess-couple",
+        "Car maintenance and inspection",
+        "home",
+        "{{me}}",
+        "Alex",
+        "Alternate weeks."
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__cards (id, created_by, session_id, title, category, notes, created_at) VALUES (?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-127 days','-13 minutes'))",
+      "params": [
+        "perf-card-13",
+        "{{me}}",
+        "perf-sess-couple",
+        "Plan weekly meals",
+        "meals",
+        "Usually falls to whoever is home first."
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__cards (id, created_by, session_id, title, category, owner_id, owner_name, notes, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-126 days','-14 minutes'))",
+      "params": [
+        "perf-card-14",
+        "{{me}}",
+        "perf-sess-couple",
+        "Grocery shopping",
+        "meals",
+        "{{me}}",
+        "Alex",
+        "Takes about an hour a week."
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__cards (id, created_by, session_id, title, category, owner_id, owner_name, notes, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-125 days','-15 minutes'))",
+      "params": [
+        "perf-card-15",
+        "{{partner}}",
+        "perf-sess-couple",
+        "Pack school lunches",
+        "meals",
+        "{{partner}}",
+        "Jordan",
+        "Set a reminder for the first of the month."
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__cards (id, created_by, session_id, title, category, owner_id, owner_name, notes, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-124 days','-16 minutes'), strftime('%Y-%m-%dT%H:%M:%fZ','now','-74 days'))",
+      "params": [
+        "perf-card-16",
+        "{{me}}",
+        "perf-sess-couple",
+        "Cook weeknight dinners",
+        "meals",
+        "{{me}}",
+        "Alex",
+        "Let's revisit at the next check-in."
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__cards (id, created_by, session_id, title, category, owner_id, owner_name, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-123 days','-17 minutes'))",
+      "params": [
+        "perf-card-17",
+        "{{me}}",
+        "perf-sess-couple",
+        "Weekend breakfast",
+        "meals",
+        "{{partner}}",
+        "Jordan"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__cards (id, created_by, session_id, title, category, owner_id, owner_name, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-122 days','-18 minutes'))",
+      "params": [
+        "perf-card-18",
+        "{{partner}}",
+        "perf-sess-couple",
+        "Keep the pantry stocked",
+        "meals",
+        "{{me}}",
+        "Alex"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__cards (id, created_by, session_id, title, category, owner_id, owner_name, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-121 days','-19 minutes'))",
+      "params": [
+        "perf-card-19",
+        "{{me}}",
+        "perf-sess-couple",
+        "Dishes and kitchen reset",
+        "meals",
+        "{{partner}}",
+        "Jordan"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__cards (id, created_by, session_id, title, category, owner_id, owner_name, notes, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-120 days','-20 minutes'), strftime('%Y-%m-%dT%H:%M:%fZ','now','-70 days'))",
+      "params": [
+        "perf-card-20",
+        "{{me}}",
+        "perf-sess-couple",
+        "Plan holiday meals",
+        "meals",
+        "{{me}}",
+        "Alex",
+        "Menu and list every Sunday."
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__cards (id, created_by, session_id, title, category, notes, created_at) VALUES (?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-119 days','-21 minutes'))",
+      "params": [
+        "perf-card-21",
+        "{{partner}}",
+        "perf-sess-couple",
+        "School drop-off",
+        "kids",
+        "Nobody owns this yet."
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__cards (id, created_by, session_id, title, category, owner_id, owner_name, notes, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-118 days','-22 minutes'))",
+      "params": [
+        "perf-card-22",
+        "{{me}}",
+        "perf-sess-couple",
+        "School pick-up",
+        "kids",
+        "{{me}}",
+        "Alex",
+        "Alternate weeks."
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__cards (id, created_by, session_id, title, category, owner_id, owner_name, notes, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-117 days','-23 minutes'))",
+      "params": [
+        "perf-card-23",
+        "{{me}}",
+        "perf-sess-couple",
+        "Homework help",
+        "kids",
+        "{{partner}}",
+        "Jordan",
+        "Usually falls to whoever is home first."
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__cards (id, created_by, session_id, title, category, owner_id, owner_name, notes, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-116 days','-24 minutes'), strftime('%Y-%m-%dT%H:%M:%fZ','now','-66 days'))",
+      "params": [
+        "perf-card-24",
+        "{{partner}}",
+        "perf-sess-couple",
+        "Bedtime routine",
+        "kids",
+        "{{me}}",
+        "Alex",
+        "Takes about an hour a week."
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__cards (id, created_by, session_id, title, category, owner_id, owner_name, notes, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-115 days','-25 minutes'))",
+      "params": [
+        "perf-card-25",
+        "{{me}}",
+        "perf-sess-couple",
+        "Sign permission slips",
+        "kids",
+        "{{partner}}",
+        "Jordan",
+        "Set a reminder for the first of the month."
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__cards (id, created_by, session_id, title, category, owner_id, owner_name, notes, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-114 days','-26 minutes'))",
+      "params": [
+        "perf-card-26",
+        "{{me}}",
+        "perf-sess-couple",
+        "Arrange babysitters",
+        "kids",
+        "{{me}}",
+        "Alex",
+        "Let's revisit at the next check-in."
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__cards (id, created_by, session_id, title, category, owner_id, owner_name, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-113 days','-27 minutes'))",
+      "params": [
+        "perf-card-27",
+        "{{partner}}",
+        "perf-sess-couple",
+        "Buy clothes as they outgrow them",
+        "kids",
+        "{{partner}}",
+        "Jordan"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__cards (id, created_by, session_id, title, category, owner_id, owner_name, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-112 days','-28 minutes'), strftime('%Y-%m-%dT%H:%M:%fZ','now','-62 days'))",
+      "params": [
+        "perf-card-28",
+        "{{me}}",
+        "perf-sess-couple",
+        "Plan birthday parties",
+        "kids",
+        "{{me}}",
+        "Alex"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__cards (id, created_by, session_id, title, category, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-111 days','-29 minutes'))",
+      "params": [
+        "perf-card-29",
+        "{{me}}",
+        "perf-sess-couple",
+        "Sports practice carpool",
+        "kids"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__cards (id, created_by, session_id, title, category, owner_id, owner_name, notes, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-110 days','-30 minutes'))",
+      "params": [
+        "perf-card-30",
+        "{{partner}}",
+        "perf-sess-couple",
+        "Track school emails",
+        "kids",
+        "{{me}}",
+        "Alex",
+        "Menu and list every Sunday."
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__cards (id, created_by, session_id, title, category, owner_id, owner_name, notes, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-109 days','-31 minutes'))",
+      "params": [
+        "perf-card-31",
+        "{{me}}",
+        "perf-sess-couple",
+        "Summer camp sign-ups",
+        "kids",
+        "{{partner}}",
+        "Jordan",
+        "Nobody owns this yet."
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__cards (id, created_by, session_id, title, category, owner_id, owner_name, notes, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-108 days','-32 minutes'), strftime('%Y-%m-%dT%H:%M:%fZ','now','-58 days'))",
+      "params": [
+        "perf-card-32",
+        "{{me}}",
+        "perf-sess-couple",
+        "Screen time rules",
+        "kids",
+        "{{me}}",
+        "Alex",
+        "Alternate weeks."
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__cards (id, created_by, session_id, title, category, owner_id, owner_name, notes, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-107 days','-33 minutes'))",
+      "params": [
+        "perf-card-33",
+        "{{partner}}",
+        "perf-sess-couple",
+        "Pay monthly bills",
+        "finances",
+        "{{partner}}",
+        "Jordan",
+        "Usually falls to whoever is home first."
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__cards (id, created_by, session_id, title, category, owner_id, owner_name, notes, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-106 days','-34 minutes'))",
+      "params": [
+        "perf-card-34",
+        "{{me}}",
+        "perf-sess-couple",
+        "Track the budget",
+        "finances",
+        "{{me}}",
+        "Alex",
+        "Takes about an hour a week."
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__cards (id, created_by, session_id, title, category, owner_id, owner_name, notes, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-105 days','-35 minutes'))",
+      "params": [
+        "perf-card-35",
+        "{{me}}",
+        "perf-sess-couple",
+        "File taxes",
+        "finances",
+        "{{partner}}",
+        "Jordan",
+        "Set a reminder for the first of the month."
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__cards (id, created_by, session_id, title, category, owner_id, owner_name, notes, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-104 days','-36 minutes'), strftime('%Y-%m-%dT%H:%M:%fZ','now','-54 days'))",
+      "params": [
+        "perf-card-36",
+        "{{partner}}",
+        "perf-sess-couple",
+        "Review insurance policies",
+        "finances",
+        "{{me}}",
+        "Alex",
+        "Let's revisit at the next check-in."
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__cards (id, created_by, session_id, title, category, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-103 days','-37 minutes'))",
+      "params": [
+        "perf-card-37",
+        "{{me}}",
+        "perf-sess-couple",
+        "Manage subscriptions",
+        "finances"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__cards (id, created_by, session_id, title, category, owner_id, owner_name, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-102 days','-38 minutes'))",
+      "params": [
+        "perf-card-38",
+        "{{me}}",
+        "perf-sess-couple",
+        "Save for vacation",
+        "finances",
+        "{{me}}",
+        "Alex"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__cards (id, created_by, session_id, title, category, owner_id, owner_name, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-101 days','-39 minutes'))",
+      "params": [
+        "perf-card-39",
+        "{{partner}}",
+        "perf-sess-couple",
+        "Kids' allowance",
+        "finances",
+        "{{partner}}",
+        "Jordan"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__cards (id, created_by, session_id, title, category, owner_id, owner_name, notes, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-100 days','-40 minutes'), strftime('%Y-%m-%dT%H:%M:%fZ','now','-50 days'))",
+      "params": [
+        "perf-card-40",
+        "{{me}}",
+        "perf-sess-couple",
+        "Remember birthdays and gifts",
+        "social",
+        "{{me}}",
+        "Alex",
+        "Menu and list every Sunday."
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__cards (id, created_by, session_id, title, category, owner_id, owner_name, notes, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-99 days','-41 minutes'))",
+      "params": [
+        "perf-card-41",
+        "{{me}}",
+        "perf-sess-couple",
+        "Send holiday cards",
+        "social",
+        "{{partner}}",
+        "Jordan",
+        "Nobody owns this yet."
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__cards (id, created_by, session_id, title, category, owner_id, owner_name, notes, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-98 days','-42 minutes'))",
+      "params": [
+        "perf-card-42",
+        "{{partner}}",
+        "perf-sess-couple",
+        "Plan date nights",
+        "social",
+        "{{me}}",
+        "Alex",
+        "Alternate weeks."
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__cards (id, created_by, session_id, title, category, owner_id, owner_name, notes, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-97 days','-43 minutes'))",
+      "params": [
+        "perf-card-43",
+        "{{me}}",
+        "perf-sess-couple",
+        "Call the grandparents",
+        "social",
+        "{{partner}}",
+        "Jordan",
+        "Usually falls to whoever is home first."
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__cards (id, created_by, session_id, title, category, owner_id, owner_name, notes, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-96 days','-44 minutes'), strftime('%Y-%m-%dT%H:%M:%fZ','now','-46 days'))",
+      "params": [
+        "perf-card-44",
+        "{{me}}",
+        "perf-sess-couple",
+        "RSVP to invitations",
+        "social",
+        "{{me}}",
+        "Alex",
+        "Takes about an hour a week."
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__cards (id, created_by, session_id, title, category, notes, created_at) VALUES (?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-95 days','-45 minutes'))",
+      "params": [
+        "perf-card-45",
+        "{{partner}}",
+        "perf-sess-couple",
+        "Host family dinners",
+        "social",
+        "Set a reminder for the first of the month."
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__cards (id, created_by, session_id, title, category, owner_id, owner_name, notes, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-94 days','-46 minutes'))",
+      "params": [
+        "perf-card-46",
+        "{{me}}",
+        "perf-sess-couple",
+        "Plan the summer trip",
+        "social",
+        "{{me}}",
+        "Alex",
+        "Let's revisit at the next check-in."
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__cards (id, created_by, session_id, title, category, owner_id, owner_name, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-93 days','-47 minutes'))",
+      "params": [
+        "perf-card-47",
+        "{{me}}",
+        "perf-sess-couple",
+        "Kids' medical appointments",
+        "health",
+        "{{partner}}",
+        "Jordan"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__cards (id, created_by, session_id, title, category, owner_id, owner_name, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-92 days','-48 minutes'), strftime('%Y-%m-%dT%H:%M:%fZ','now','-42 days'))",
+      "params": [
+        "perf-card-48",
+        "{{partner}}",
+        "perf-sess-couple",
+        "Dentist check-ups",
+        "health",
+        "{{me}}",
+        "Alex"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__cards (id, created_by, session_id, title, category, owner_id, owner_name, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-91 days','-49 minutes'))",
+      "params": [
+        "perf-card-49",
+        "{{me}}",
+        "perf-sess-couple",
+        "Refill prescriptions",
+        "health",
+        "{{partner}}",
+        "Jordan"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__cards (id, created_by, session_id, title, category, owner_id, owner_name, notes, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-90 days','-50 minutes'))",
+      "params": [
+        "perf-card-50",
+        "{{me}}",
+        "perf-sess-couple",
+        "Vet visits for the dog",
+        "health",
+        "{{me}}",
+        "Alex",
+        "Menu and list every Sunday."
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__cards (id, created_by, session_id, title, category, owner_id, owner_name, notes, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-89 days','-51 minutes'))",
+      "params": [
+        "perf-card-51",
+        "{{partner}}",
+        "perf-sess-couple",
+        "Track vaccinations",
+        "health",
+        "{{partner}}",
+        "Jordan",
+        "Nobody owns this yet."
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__cards (id, created_by, session_id, title, category, owner_id, owner_name, notes, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-88 days','-52 minutes'), strftime('%Y-%m-%dT%H:%M:%fZ','now','-38 days'))",
+      "params": [
+        "perf-card-52",
+        "{{me}}",
+        "perf-sess-couple",
+        "Book eye exams",
+        "health",
+        "{{me}}",
+        "Alex",
+        "Alternate weeks."
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__cards (id, created_by, session_id, title, category, notes, created_at) VALUES (?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-87 days','-53 minutes'))",
+      "params": [
+        "perf-card-53",
+        "{{me}}",
+        "perf-sess-couple",
+        "Renew passports",
+        "admin",
+        "Usually falls to whoever is home first."
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__cards (id, created_by, session_id, title, category, owner_id, owner_name, notes, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-86 days','-54 minutes'))",
+      "params": [
+        "perf-card-54",
+        "{{partner}}",
+        "perf-sess-couple",
+        "Sort the mail",
+        "admin",
+        "{{me}}",
+        "Alex",
+        "Takes about an hour a week."
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__cards (id, created_by, session_id, title, category, owner_id, owner_name, notes, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-85 days','-55 minutes'))",
+      "params": [
+        "perf-card-55",
+        "{{me}}",
+        "perf-sess-couple",
+        "Return packages",
+        "admin",
+        "{{partner}}",
+        "Jordan",
+        "Set a reminder for the first of the month."
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__cards (id, created_by, session_id, title, category, owner_id, owner_name, notes, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-84 days','-56 minutes'), strftime('%Y-%m-%dT%H:%M:%fZ','now','-34 days'))",
+      "params": [
+        "perf-card-56",
+        "{{me}}",
+        "perf-sess-couple",
+        "Car registration",
+        "admin",
+        "{{me}}",
+        "Alex",
+        "Let's revisit at the next check-in."
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__cards (id, created_by, session_id, title, category, owner_id, owner_name, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-83 days','-57 minutes'))",
+      "params": [
+        "perf-card-57",
+        "{{partner}}",
+        "perf-sess-couple",
+        "Keep the family calendar current",
+        "admin",
+        "{{partner}}",
+        "Jordan"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__cards (id, created_by, session_id, title, category, owner_id, owner_name, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-82 days','-58 minutes'))",
+      "params": [
+        "perf-card-58",
+        "{{me}}",
+        "perf-sess-couple",
+        "School forms and paperwork",
+        "admin",
+        "{{me}}",
+        "Alex"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__cards (id, created_by, session_id, title, category, owner_id, owner_name, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-81 days','-59 minutes'))",
+      "params": [
+        "perf-card-59",
+        "{{me}}",
+        "perf-sess-couple",
+        "Back up family photos",
+        "admin",
+        "{{partner}}",
+        "Jordan"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__cards (id, created_by, session_id, title, category, owner_id, owner_name, notes, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-80 days','-60 minutes'), strftime('%Y-%m-%dT%H:%M:%fZ','now','-30 days'))",
+      "params": [
+        "perf-card-60",
+        "{{partner}}",
+        "perf-sess-couple",
+        "Walk the dog",
+        "other",
+        "{{me}}",
+        "Alex",
+        "Menu and list every Sunday."
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__cards (id, created_by, session_id, title, category, notes, created_at) VALUES (?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-79 days','-61 minutes'))",
+      "params": [
+        "perf-card-61",
+        "{{me}}",
+        "perf-sess-couple",
+        "Charity donations",
+        "other",
+        "Nobody owns this yet."
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__cards (id, created_by, session_id, title, category, owner_id, owner_name, notes, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-78 days','-62 minutes'))",
+      "params": [
+        "perf-card-62",
+        "{{me}}",
+        "perf-sess-couple",
+        "Library book returns",
+        "other",
+        "{{me}}",
+        "Alex",
+        "Alternate weeks."
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__cards (id, created_by, session_id, title, category, owner_id, owner_name, notes, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-77 days','-63 minutes'))",
+      "params": [
+        "perf-card-63",
+        "{{partner}}",
+        "perf-sess-couple",
+        "Plan weekend activities",
+        "other",
+        "{{partner}}",
+        "Jordan",
+        "Usually falls to whoever is home first."
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__checkins (id, created_by, created_by_name, session_id, note, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-3 days','-0 minutes'))",
+      "params": [
+        "perf-checkin-01",
+        "{{me}}",
+        "Alex",
+        "perf-sess-couple",
+        "Felt more even this week. Swapped school pick-up for dinners."
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__checkins (id, created_by, created_by_name, session_id, note, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-9 days','-11 minutes'))",
+      "params": [
+        "perf-checkin-02",
+        "{{partner}}",
+        "Jordan",
+        "perf-sess-couple",
+        "Bills are all on me again, let's talk Sunday."
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__checkins (id, created_by, created_by_name, session_id, note, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-15 days','-22 minutes'))",
+      "params": [
+        "perf-checkin-03",
+        "{{me}}",
+        "Alex",
+        "perf-sess-couple",
+        "Good week. Thanks for taking the vet visit."
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__checkins (id, created_by, created_by_name, session_id, note, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-21 days','-33 minutes'))",
+      "params": [
+        "perf-checkin-04",
+        "{{partner}}",
+        "Jordan",
+        "perf-sess-couple",
+        "I'm stretched thin on the kids' stuff, can we rebalance?"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__checkins (id, created_by, created_by_name, session_id, note, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-27 days','-44 minutes'))",
+      "params": [
+        "perf-checkin-05",
+        "{{me}}",
+        "Alex",
+        "perf-sess-couple",
+        "Agreed to split laundry by weeks."
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__checkins (id, created_by, created_by_name, session_id, note, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-33 days','-55 minutes'))",
+      "params": [
+        "perf-checkin-06",
+        "{{partner}}",
+        "Jordan",
+        "perf-sess-couple",
+        "Summer camp forms are done."
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__checkins (id, created_by, created_by_name, session_id, note, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-39 days','-66 minutes'))",
+      "params": [
+        "perf-checkin-07",
+        "{{me}}",
+        "Alex",
+        "perf-sess-couple",
+        "Checked in after the trip, nothing to change."
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__checkins (id, created_by, created_by_name, session_id, note, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-45 days','-77 minutes'))",
+      "params": [
+        "perf-checkin-08",
+        "{{partner}}",
+        "Jordan",
+        "perf-sess-couple",
+        "Moved meal planning over to Jordan."
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__checkins (id, created_by, created_by_name, session_id, note, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-51 days','-88 minutes'))",
+      "params": [
+        "perf-checkin-09",
+        "{{me}}",
+        "Alex",
+        "perf-sess-couple",
+        "Reviewed the unassigned cards together."
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__checkins (id, created_by, created_by_name, session_id, note, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-57 days','-99 minutes'))",
+      "params": [
+        "perf-checkin-10",
+        "{{partner}}",
+        "Jordan",
+        "perf-sess-couple",
+        "Holiday planning starts now."
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__checkins (id, created_by, created_by_name, session_id, note, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-63 days','-110 minutes'))",
+      "params": [
+        "perf-checkin-11",
+        "{{me}}",
+        "Alex",
+        "perf-sess-couple",
+        "Tired week for both of us, kept it simple."
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__checkins (id, created_by, created_by_name, session_id, note, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-69 days','-121 minutes'))",
+      "params": [
+        "perf-checkin-12",
+        "{{partner}}",
+        "Jordan",
+        "perf-sess-couple",
+        "Traded yard work for grocery runs."
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__checkins (id, created_by, created_by_name, session_id, note, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-75 days','-132 minutes'))",
+      "params": [
+        "perf-checkin-13",
+        "{{me}}",
+        "Alex",
+        "perf-sess-couple",
+        "Felt more even this week. Swapped school pick-up for dinners."
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__checkins (id, created_by, created_by_name, session_id, note, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-81 days','-143 minutes'))",
+      "params": [
+        "perf-checkin-14",
+        "{{partner}}",
+        "Jordan",
+        "perf-sess-couple",
+        "Bills are all on me again, let's talk Sunday."
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__checkins (id, created_by, created_by_name, session_id, note, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-87 days','-154 minutes'))",
+      "params": [
+        "perf-checkin-15",
+        "{{me}}",
+        "Alex",
+        "perf-sess-couple",
+        "Good week. Thanks for taking the vet visit."
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__checkins (id, created_by, created_by_name, session_id, note, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-93 days','-165 minutes'))",
+      "params": [
+        "perf-checkin-16",
+        "{{partner}}",
+        "Jordan",
+        "perf-sess-couple",
+        "I'm stretched thin on the kids' stuff, can we rebalance?"
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__checkins (id, created_by, created_by_name, session_id, note, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-99 days','-176 minutes'))",
+      "params": [
+        "perf-checkin-17",
+        "{{me}}",
+        "Alex",
+        "perf-sess-couple",
+        "Agreed to split laundry by weeks."
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__checkins (id, created_by, created_by_name, session_id, note, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-105 days','-187 minutes'))",
+      "params": [
+        "perf-checkin-18",
+        "{{partner}}",
+        "Jordan",
+        "perf-sess-couple",
+        "Summer camp forms are done."
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__checkins (id, created_by, created_by_name, session_id, note, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-111 days','-198 minutes'))",
+      "params": [
+        "perf-checkin-19",
+        "{{me}}",
+        "Alex",
+        "perf-sess-couple",
+        "Checked in after the trip, nothing to change."
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__checkins (id, created_by, created_by_name, session_id, note, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-117 days','-209 minutes'))",
+      "params": [
+        "perf-checkin-20",
+        "{{partner}}",
+        "Jordan",
+        "perf-sess-couple",
+        "Moved meal planning over to Jordan."
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__checkins (id, created_by, created_by_name, session_id, note, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-123 days','-220 minutes'))",
+      "params": [
+        "perf-checkin-21",
+        "{{me}}",
+        "Alex",
+        "perf-sess-couple",
+        "Reviewed the unassigned cards together."
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__checkins (id, created_by, created_by_name, session_id, note, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-129 days','-231 minutes'))",
+      "params": [
+        "perf-checkin-22",
+        "{{partner}}",
+        "Jordan",
+        "perf-sess-couple",
+        "Holiday planning starts now."
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__checkins (id, created_by, created_by_name, session_id, note, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-135 days','-242 minutes'))",
+      "params": [
+        "perf-checkin-23",
+        "{{me}}",
+        "Alex",
+        "perf-sess-couple",
+        "Tired week for both of us, kept it simple."
+      ]
+    },
+    {
+      "sql": "INSERT INTO app_mental_load__checkins (id, created_by, created_by_name, session_id, note, created_at) VALUES (?, ?, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ','now','-141 days','-253 minutes'))",
+      "params": [
+        "perf-checkin-24",
+        "{{partner}}",
+        "Jordan",
+        "perf-sess-couple",
+        "Traded yard work for grocery runs."
+      ]
+    }
+  ]
+}
