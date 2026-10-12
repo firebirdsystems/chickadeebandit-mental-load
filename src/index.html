@@ -76,6 +76,10 @@
     input:focus, textarea:focus, select:focus { outline: none; border-color: var(--accent); }
     .modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 6px; }
     .error { background: var(--hub-tint-danger, #fee2e2); color: var(--hub-tint-danger-fg, #b91c1c); padding: 9px 12px; border-radius: 8px; margin-bottom: 10px; font-size: .86rem; }
+    .load-error { max-width: 728px; margin: 16px auto 0; padding: 10px 14px; border-radius: 10px; background: var(--hub-tint-danger, #fee2e2); color: var(--hub-tint-danger-fg, #b91c1c);
+      font-size: .9rem; display: flex; gap: 10px; align-items: center; justify-content: space-between; }
+    .load-error[hidden] { display: none; }
+    .load-error-retry { background: none; border: 1px solid currentColor; border-radius: 8px; padding: 4px 10px; color: inherit; font: inherit; cursor: pointer; white-space: nowrap; }
     .search-row { margin-bottom: 12px; }
     .search-input {
       width: 100%; border: 1.5px solid var(--border-mid, var(--border, #d1d5db));
@@ -86,6 +90,7 @@
   </style>
 </head>
 <body>
+  <div id="load-error" class="load-error" data-testid="load-error" role="alert" hidden><span>Couldn’t load your partner.</span> <button type="button" class="load-error-retry" data-testid="load-retry">Try again</button></div>
   <!-- setup -->
   <div id="view-setup" class="view" data-testid="view-setup">
     <div class="setup-wrap">
@@ -95,6 +100,7 @@
         <p class="setup-desc">Name the invisible work, see who's carrying it, and rebalance together. Just for the two of you.</p>
         <span class="pick-label">Who is your partner?</span>
         <div id="setup-members" style="margin-bottom:18px"></div>
+        <div id="setup-err"></div>
         <button class="btn" style="width:100%" onclick="savePartner()">Get started</button>
       </div>
     </div>
@@ -140,8 +146,8 @@ let searchQ = "";       // in-app search (see logic.js searchableFields)
     async function db(sql, params = []) {
       if (!DB) return { rows: [] };
       const res = await fetch(DB, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ sql, params }) });
-      const json = await res.json();
-      if (json.error) throw new Error(json.error);
+      const json = await res.json().catch(() => null);
+      if (!res.ok || !json || typeof json !== "object" || json.error) throw new Error(json?.error || "Couldn’t reach the hub. Try again.");
       return json;
     }
 
@@ -154,18 +160,36 @@ let searchQ = "";       // in-app search (see logic.js searchableFields)
         ];
         return;
       }
-      try { const res = await fetch(`${CONTEXT}?keys=family.members`); members = ((await res.json())["family.members"]) ?? []; }
-      catch { members = []; }
+      const res = await fetch(`${CONTEXT}?keys=family.members`);
+      const ctx = await res.json().catch(() => null);
+      if (!res.ok || !ctx || typeof ctx !== "object" || ctx.$errors?.length) throw new Error("Couldn’t reach the hub. Try again.");
+      members = ctx["family.members"] ?? [];
     }
 
+    // An unpaired member is answered 200 with partner_id null. Any other answer
+    // is a failed read and throws: it is not "no partner yet".
     async function loadPartner() {
       if (!ME) return null;
-      try {
-        const res = await fetch(`/run/${APP_ID}/api/partner`);
-        const status = res.ok ? await res.json() : { partner_id: null, reciprocal: false };
-        partnerReciprocal = status.reciprocal;
-        return status.partner_id ? (members.find(m => m.id === status.partner_id) ?? null) : null;
-      } catch { partnerReciprocal = false; return null; }
+      const res = await fetch(`/run/${APP_ID}/api/partner`);
+      if (!res.ok) throw new Error("partner unavailable");
+      const status = await res.json();
+      if (!status || typeof status !== "object" || !("partner_id" in status)) throw new Error("partner unavailable");
+      partnerReciprocal = status.reciprocal;
+      return status.partner_id ? (members.find(m => m.id === status.partner_id) ?? null) : null;
+    }
+
+    // The first load failed: a banner that stays until a load succeeds. While
+    // it shows, an unread board is not drawn as an empty one.
+    let loadFailed = false;
+    function showLoadError(thing) {
+      loadFailed = true;
+      const banner = document.getElementById("load-error");
+      banner.querySelector("span").textContent = `Couldn’t load ${thing}.`;
+      banner.hidden = false;
+    }
+    function clearLoadError() {
+      loadFailed = false;
+      document.getElementById("load-error").hidden = true;
     }
 
     function seedDemo() {
@@ -199,9 +223,10 @@ let searchQ = "";       // in-app search (see logic.js searchableFields)
       const partnerId = sel.value;
       const btn = document.querySelector('#view-setup .btn');
       if (btn) { btn.disabled = true; btn.textContent = "Saving…"; }
+      document.getElementById("setup-err").innerHTML = "";
       try {
         const res = ME ? await fetch(`/run/${APP_ID}/api/partner`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ partner_id: partnerId }) }) : null;
-        if (res && !res.ok) throw new Error((await res.json()).error ?? "Could not save partner");
+        if (res && !res.ok) throw new Error((await res.json().catch(() => ({}))).error ?? "Could not save partner");
         const status = res ? await res.json() : { reciprocal: true };
         partnerReciprocal = status.reciprocal;
         partner = members.find(m => m.id === partnerId) ?? null;
@@ -252,7 +277,20 @@ let searchQ = "";       // in-app search (see logic.js searchableFields)
       const f = modalEl.querySelector("[data-autofocus]"); if (f) f.focus();
     }
     window.closeModal = function() { modalEl?.remove(); modalEl = null; };
-    function alertErr(msg) { const el = document.getElementById("err"); if (el) el.innerHTML = `<div class="error">${esc(msg)}</div>`; }
+    // Shown in whichever view is on screen: the setup card has its own slot.
+    function alertErr(msg) {
+      const onSetup = document.getElementById("view-setup").classList.contains("active");
+      const el = document.getElementById(onSetup ? "setup-err" : "err");
+      if (el) el.innerHTML = `<div class="error">${esc(msg)}</div>`;
+    }
+
+    // A card write the hub applied to no row (the card was removed, or the
+    // pairing changed): re-read the board, then say the change did not land.
+    async function cardNotChanged() {
+      try { await loadData(); } catch {}
+      closeModal(); render();
+      alertErr("That domain could not be changed. The board shows what is saved.");
+    }
 
     /* ── add / edit card ── */
     window.openAddCard = function(id) {
@@ -290,8 +328,11 @@ let searchQ = "";       // in-app search (see logic.js searchableFields)
       try {
         if (id) {
           const c = cards.find(x => x.id === id);
-          if (DB && partner) await db("UPDATE app_mental_load__cards SET title=?, category=?, owner_id=?, owner_name=?, notes=?, updated_at=? WHERE id=?",
-            [title, category, ownerId, ownerName, notes, nowIso(), id]);
+          if (DB && partner) {
+            const { changed } = await db("UPDATE app_mental_load__cards SET title=?, category=?, owner_id=?, owner_name=?, notes=?, updated_at=? WHERE id=?",
+              [title, category, ownerId, ownerName, notes, nowIso(), id]);
+            if (changed === 0) return cardNotChanged();
+          }
           Object.assign(c, { title, category, owner_id: ownerId, owner_name: ownerName, notes });
         } else {
           const row = { id: uid("c"), created_by: ME?.id ?? "demo-1", session_id: "", title, category, owner_id: ownerId, owner_name: ownerName, notes, created_at: nowIso() };
@@ -312,7 +353,10 @@ let searchQ = "";       // in-app search (see logic.js searchableFields)
       else if (isMe(c.owner_id)) { next = pId; nextName = partner?.name ?? "Partner"; }
       else { next = ""; nextName = ""; }
       try {
-        if (DB && partner) await db("UPDATE app_mental_load__cards SET owner_id=?, owner_name=?, updated_at=? WHERE id=?", [next, nextName, nowIso(), id]);
+        if (DB && partner) {
+          const { changed } = await db("UPDATE app_mental_load__cards SET owner_id=?, owner_name=?, updated_at=? WHERE id=?", [next, nextName, nowIso(), id]);
+          if (changed === 0) return cardNotChanged();
+        }
         c.owner_id = next; c.owner_name = nextName; render();
       } catch (e) { alertErr(e.message); }
     };
@@ -320,7 +364,10 @@ let searchQ = "";       // in-app search (see logic.js searchableFields)
     window.deleteCard = async function(id) {
       if (!(await hubConfirm({ message: "Delete this domain?", destructive: true, confirmLabel: "Delete" }))) return;
       try {
-        if (DB && partner) await db("DELETE FROM app_mental_load__cards WHERE id=?", [id]);
+        if (DB && partner) {
+          const { changed } = await db("DELETE FROM app_mental_load__cards WHERE id=?", [id]);
+          if (changed === 0) return cardNotChanged();
+        }
         cards = cards.filter(x => x.id !== id); render();
       } catch (e) { alertErr(e.message); }
     };
@@ -355,6 +402,12 @@ let searchQ = "";       // in-app search (see logic.js searchableFields)
       const { meCount, pCount, openCount, total } = computeBalance(cards, ME?.id);
       const meName = ME?.name ?? "You", pName = partner?.name ?? "Partner";
       document.getElementById("err").innerHTML = "";
+      if (loadFailed && !cards.length) {
+        document.getElementById("balance").innerHTML = "";
+        document.getElementById("cards").innerHTML = "";
+        document.getElementById("search-row").style.display = "none";
+        return;
+      }
       document.getElementById("balance").innerHTML = `
         <div class="balance">
           <strong>Who's carrying what</strong>
@@ -378,7 +431,7 @@ let searchQ = "";       // in-app search (see logic.js searchableFields)
       // Only worth offering the box once there is a board to search.
       const searchRow = document.getElementById("search-row");
       if (searchRow) searchRow.style.display = cards.length ? "" : "none";
-      if (!cards.length) { el.innerHTML = `<div class="empty">No domains yet. Add the first invisible job you both juggle.</div>`; return; }
+      if (!cards.length) { el.innerHTML = `<div class="empty" data-testid="empty-state">No domains yet. Add the first invisible job you both juggle.</div>`; return; }
       const shown = searchQ ? cards.filter(c => searchMatch(searchQ, searchableFields(c))) : cards;
       if (!shown.length) { el.innerHTML = `<div class="empty">Nothing matches "${esc(searchQ)}".</div>`; return; }
       const byCat = cardsByCategory(shown);
@@ -419,13 +472,34 @@ let searchQ = "";       // in-app search (see logic.js searchableFields)
       else if (t.dataset.act === "del") window.deleteCard(id);
     });
 
-    (async () => {
-      await loadMembers();
-      partner = await loadPartner();
+    async function start() {
+      try {
+        await loadMembers();
+        partner = await loadPartner();
+      } catch {
+        // Neither view opens: a member whose pairing could not be read is not sent to setup.
+        showLoadError("your partner");
+        return;
+      }
       if (!ME && !CONTEXT) { partner = members[1]; partnerReciprocal = true; }
-      if (!partner || !partnerReciprocal) { showSetup(); }
-      else { await loadData(); showMain(); }
-    })();
+      if (!partner || !partnerReciprocal) {
+        clearLoadError();
+        showSetup();
+        return;
+      }
+      try {
+        await loadData();
+      } catch {
+        // The board still opens when its cards cannot be read, with the banner above it.
+        showLoadError("your board");
+        showMain();
+        return;
+      }
+      clearLoadError();
+      showMain();
+    }
+    document.querySelector('[data-testid="load-retry"]').addEventListener("click", start);
+    start();
   </script>
 </body>
 </html>

@@ -205,6 +205,151 @@
           "as": "b"
         }
       ]
+    },
+    {
+      "name": "a paired member whose board cannot be read is told so, not shown an empty board",
+      "members": {
+        "a": "adult",
+        "b": "adult"
+      },
+      "steps": [
+        {
+          "action": "seedRaw",
+          "sql": "INSERT INTO app_mental_load__partner_config (member_id, partner_id, session_id, created_at) VALUES (?, ?, ?, ?)",
+          "params": [
+            "{{a}}",
+            "{{b}}",
+            "sess-ab",
+            "2026-01-01T00:00:00Z"
+          ]
+        },
+        {
+          "action": "seedRaw",
+          "sql": "INSERT INTO app_mental_load__partner_config (member_id, partner_id, session_id, created_at) VALUES (?, ?, ?, ?)",
+          "params": [
+            "{{b}}",
+            "{{a}}",
+            "sess-ab",
+            "2026-01-01T00:00:00Z"
+          ]
+        },
+        {
+          "action": "seedRaw",
+          "sql": "INSERT INTO app_mental_load__cards (id, created_by, session_id, title, category, owner_id, owner_name, notes, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+          "params": [
+            "c1",
+            "{{a}}",
+            "sess-ab",
+            "Booking the dentist",
+            "home",
+            "{{a}}",
+            "Partner A",
+            "seeded",
+            "2026-01-01T00:00:00Z",
+            "2026-01-01T00:00:00Z"
+          ]
+        },
+        {
+          "action": "open",
+          "as": "b"
+        },
+        {
+          "action": "expectVisible",
+          "selector": "[data-testid=\"view-main\"]",
+          "as": "b"
+        },
+        {
+          "action": "expectText",
+          "selector": "[data-testid=\"card\"][data-card-id=\"c1\"]",
+          "text": "Booking the dentist",
+          "as": "b"
+        },
+        {
+          "action": "expectHidden",
+          "selector": "[data-testid=\"load-error\"]",
+          "as": "b"
+        },
+        {
+          "action": "fault",
+          "mode": "down",
+          "as": "b"
+        },
+        {
+          "action": "reload",
+          "as": "b"
+        },
+        {
+          "action": "expectVisible",
+          "selector": "[data-testid=\"load-error\"]",
+          "as": "b"
+        },
+        {
+          "action": "expectText",
+          "selector": "[data-testid=\"load-error\"]",
+          "text": "Couldn’t load your board.",
+          "as": "b"
+        },
+        {
+          "action": "expectVisible",
+          "selector": "[data-testid=\"view-main\"]",
+          "as": "b"
+        },
+        {
+          "action": "expectHidden",
+          "selector": "[data-testid=\"view-setup\"]",
+          "as": "b"
+        },
+        {
+          "action": "expectCount",
+          "selector": "[data-testid=\"empty-state\"]",
+          "count": 0,
+          "as": "b"
+        },
+        {
+          "action": "expectCount",
+          "selector": "[data-testid=\"card\"]",
+          "count": 0,
+          "as": "b"
+        },
+        {
+          "action": "expectCount",
+          "selector": "[data-testid=\"balance-me\"]",
+          "count": 0,
+          "as": "b"
+        },
+        {
+          "action": "fault",
+          "mode": "none",
+          "as": "b"
+        },
+        {
+          "action": "click",
+          "selector": "[data-testid=\"load-retry\"]",
+          "as": "b"
+        },
+        {
+          "action": "expectText",
+          "selector": "[data-testid=\"card\"][data-card-id=\"c1\"]",
+          "text": "Booking the dentist",
+          "as": "b"
+        },
+        {
+          "action": "expectVisible",
+          "selector": "[data-testid=\"view-main\"]",
+          "as": "b"
+        },
+        {
+          "action": "expectHidden",
+          "selector": "[data-testid=\"load-error\"]",
+          "as": "b"
+        },
+        {
+          "action": "expectText",
+          "selector": "[data-testid=\"balance-partner\"]",
+          "text": "1",
+          "as": "b"
+        }
+      ]
     }
   ]
 }
