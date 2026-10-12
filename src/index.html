@@ -239,7 +239,7 @@ let searchQ = "";       // in-app search (see logic.js searchableFields)
         showMain();
       } catch (e) {
         if (btn) { btn.disabled = false; btn.textContent = "Get started"; }
-        alertErr(e.message);
+        console.error(e); alertErr("Couldn’t save your partner — try again.");
       }
     };
 
@@ -341,7 +341,7 @@ let searchQ = "";       // in-app search (see logic.js searchableFields)
           cards = [...cards, row];
         }
         closeModal(); render();
-      } catch (e) { btn.disabled = false; btn.textContent = id ? "Save" : "Add"; alertErr(e.message); }
+      } catch (e) { btn.disabled = false; btn.textContent = id ? "Save" : "Add"; console.error(e); alertErr("Couldn’t save the domain — try again."); }
     };
 
     // cycle owner: unassigned → me → partner → unassigned
@@ -358,7 +358,7 @@ let searchQ = "";       // in-app search (see logic.js searchableFields)
           if (changed === 0) return cardNotChanged();
         }
         c.owner_id = next; c.owner_name = nextName; render();
-      } catch (e) { alertErr(e.message); }
+      } catch (e) { console.error(e); alertErr("Couldn’t change the owner — try again."); }
     };
 
     window.deleteCard = async function(id) {
@@ -369,7 +369,7 @@ let searchQ = "";       // in-app search (see logic.js searchableFields)
           if (changed === 0) return cardNotChanged();
         }
         cards = cards.filter(x => x.id !== id); render();
-      } catch (e) { alertErr(e.message); }
+      } catch (e) { console.error(e); alertErr("Couldn’t delete the domain — try again."); }
     };
 
     window.openCheckin = function() {
@@ -387,7 +387,7 @@ let searchQ = "";       // in-app search (see logic.js searchableFields)
           [row.id, row.created_by, row.created_by_name, row.session_id, row.note, row.created_at]);
         lastCheckin = row;
         closeModal(); render();
-      } catch (e) { btn.disabled = false; btn.textContent = "Log check-in"; alertErr(e.message); }
+      } catch (e) { btn.disabled = false; btn.textContent = "Log check-in"; console.error(e); alertErr("Couldn’t log the check-in — try again."); }
     };
 
     /* ── render ── */
