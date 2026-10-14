@@ -295,11 +295,16 @@ let searchQ = "";       // in-app search (see logic.js searchableFields)
 
     // A card write the hub applied to no row (the card was removed, or the
     // pairing changed): re-read the board, then say the change did not land.
-    async function cardNotChanged(id, action) {
+    // From the edit dialog (`dlg`), the dialog stays open as typed and the line
+    // goes in it; no other dialog is closed.
+    async function cardNotChanged(id, action, dlg) {
       let found;
       try { await loadData(); found = cards.some(x => x.id === id); } catch (e) { console.error(e); }
-      closeModal(); render();
-      alertErr(failureLine(null, { action, thing: "domain", found }));
+      render();
+      const line = failureLine(null, { action, thing: "domain", found });
+      const slot = dlg && dlg === modalEl ? dlg.querySelector("#f-err") : null;
+      if (slot) slot.innerHTML = `<div class="error">${esc(line)}</div>`;
+      else alertErr(line);
     }
 
     /* ── add / edit card ── */
@@ -320,6 +325,7 @@ let searchQ = "";       // in-app search (see logic.js searchableFields)
         <div class="field"><label for="f-cat">Category</label><select id="f-cat">${opts}</select></div>
         <div class="field"><label for="f-owner">Who holds it?</label><select id="f-owner">${ownerOpts}</select></div>
         <div class="field"><label for="f-notes">Notes</label><textarea id="f-notes" placeholder="What the full job actually includes">${c ? esc(c.notes) : ""}</textarea></div>
+        <div id="f-err"></div>
         <div class="modal-actions">
           <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
           <button class="btn" onclick="submitCard()">${c ? "Save" : "Add"}</button>
@@ -333,6 +339,7 @@ let searchQ = "";       // in-app search (see logic.js searchableFields)
       const category = document.getElementById("f-cat").value;
       const ownerId = document.getElementById("f-owner").value;
       const ownerName = ownerId ? (isMe(ownerId) ? (ME?.name ?? "Me") : (partner?.name ?? "Partner")) : "";
+      const dlg = modalEl;
       const btn = modalEl.querySelector(".modal-actions .btn:last-child"); btn.disabled = true; btn.textContent = "Saving…";
       const notes = document.getElementById("f-notes").value.trim();
       let note = "";
@@ -342,7 +349,7 @@ let searchQ = "";       // in-app search (see logic.js searchableFields)
           if (DB && partner) {
             const { changed } = await db("UPDATE app_mental_load__cards SET title=?, category=?, owner_id=?, owner_name=?, notes=?, updated_at=? WHERE id=?",
               [title, category, ownerId, ownerName, notes, nowIso(), id]);
-            if (changed === 0) return cardNotChanged(id, "save the domain");
+            if (changed === 0) { await cardNotChanged(id, "save the domain", dlg); btn.disabled = false; btn.textContent = "Save"; return; }
           }
           Object.assign(c, { title, category, owner_id: ownerId, owner_name: ownerName, notes });
         } else {
@@ -368,7 +375,13 @@ let searchQ = "";       // in-app search (see logic.js searchableFields)
         }
         closeModal(); render();
         if (note) alertErr(note);
-      } catch (e) { btn.disabled = false; btn.textContent = id ? "Save" : "Add"; console.error(e); alertErr(failureLine(e, { action: "save the domain", thing: "domain" })); }
+      } catch (e) {
+        btn.disabled = false; btn.textContent = id ? "Save" : "Add"; console.error(e);
+        // The dialog stays open as typed, so the line goes in it.
+        const line = failureLine(e, { action: "save the domain", thing: "domain" });
+        const slot = dlg === modalEl ? dlg.querySelector("#f-err") : null;
+        if (slot) slot.innerHTML = `<div class="error">${esc(line)}</div>`; else alertErr(line);
+      }
     };
 
     // cycle owner: unassigned → me → partner → unassigned
