@@ -127,7 +127,7 @@
 
   <script type="module">
     import { esc, initial, memberColor, formatRelativeDate, hubConfirm, searchMatch, glyph, chickadee } from "/hub-sdk.js";
-    import { CATEGORIES, isMe as isMeOf, computeBalance, cardsByCategory, searchableFields } from "./logic.js";
+    import { CATEGORIES, isMe as isMeOf, computeBalance, cardsByCategory, searchableFields, failureLine, readBackFirst, storedDiffers } from "./logic.js";
 
     // Static markup cannot call the SDK, so these marks are drawn here.
     document.getElementById("setup-art").innerHTML = chickadee("pair", { size: 80 });
@@ -147,7 +147,8 @@ let searchQ = "";       // in-app search (see logic.js searchableFields)
       if (!DB) return { rows: [] };
       const res = await fetch(DB, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ sql, params }) });
       const json = await res.json().catch(() => null);
-      if (!res.ok || !json || typeof json !== "object" || json.error) throw new Error(json?.error || "Couldn’t reach the hub. Try again.");
+      // The status (and `code`) pick the line shown; the hub's text stays in the console.
+      if (!res.ok || !json || typeof json !== "object" || json.error) throw Object.assign(new Error(json?.error || "Couldn’t reach the hub. Try again."), { status: res.status, code: json?.code });
       return json;
     }
 
@@ -226,7 +227,7 @@ let searchQ = "";       // in-app search (see logic.js searchableFields)
       document.getElementById("setup-err").innerHTML = "";
       try {
         const res = ME ? await fetch(`/run/${APP_ID}/api/partner`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ partner_id: partnerId }) }) : null;
-        if (res && !res.ok) throw new Error((await res.json().catch(() => ({}))).error ?? "Could not save partner");
+        if (res && !res.ok) throw Object.assign(new Error((await res.json().catch(() => ({}))).error ?? "Could not save partner"), { status: res.status });
         const status = res ? await res.json() : { reciprocal: true };
         partnerReciprocal = status.reciprocal;
         partner = members.find(m => m.id === partnerId) ?? null;
@@ -235,12 +236,20 @@ let searchQ = "";       // in-app search (see logic.js searchableFields)
           showWaiting();
           return;
         }
-        await loadData();
-        showMain();
       } catch (e) {
         if (btn) { btn.disabled = false; btn.textContent = "Get started"; }
-        console.error(e); alertErr("Couldn’t save your partner — try again.");
+        console.error(e); alertErr(failureLine(e, { action: "save your partner", thing: "partner" }));
+        return;
       }
+      // The pairing is stored: a failed read of the board is a load failure, not a failed save.
+      try {
+        await loadData();
+        clearLoadError();
+      } catch (e) {
+        console.error(e);
+        showLoadError("your board");
+      }
+      showMain();
     };
 
     function showWaiting() {
@@ -286,10 +295,11 @@ let searchQ = "";       // in-app search (see logic.js searchableFields)
 
     // A card write the hub applied to no row (the card was removed, or the
     // pairing changed): re-read the board, then say the change did not land.
-    async function cardNotChanged() {
-      try { await loadData(); } catch {}
+    async function cardNotChanged(id, action) {
+      let found;
+      try { await loadData(); found = cards.some(x => x.id === id); } catch (e) { console.error(e); }
       closeModal(); render();
-      alertErr("That domain could not be changed. The board shows what is saved.");
+      alertErr(failureLine(null, { action, thing: "domain", found }));
     }
 
     /* ── add / edit card ── */
@@ -325,23 +335,40 @@ let searchQ = "";       // in-app search (see logic.js searchableFields)
       const ownerName = ownerId ? (isMe(ownerId) ? (ME?.name ?? "Me") : (partner?.name ?? "Partner")) : "";
       const btn = modalEl.querySelector(".modal-actions .btn:last-child"); btn.disabled = true; btn.textContent = "Saving…";
       const notes = document.getElementById("f-notes").value.trim();
+      let note = "";
       try {
         if (id) {
           const c = cards.find(x => x.id === id);
           if (DB && partner) {
             const { changed } = await db("UPDATE app_mental_load__cards SET title=?, category=?, owner_id=?, owner_name=?, notes=?, updated_at=? WHERE id=?",
               [title, category, ownerId, ownerName, notes, nowIso(), id]);
-            if (changed === 0) return cardNotChanged();
+            if (changed === 0) return cardNotChanged(id, "save the domain");
           }
           Object.assign(c, { title, category, owner_id: ownerId, owner_name: ownerName, notes });
         } else {
-          const row = { id: uid("c"), created_by: ME?.id ?? "demo-1", session_id: "", title, category, owner_id: ownerId, owner_name: ownerName, notes, created_at: nowIso() };
-          if (DB && partner) await db("INSERT INTO app_mental_load__cards (id, created_by, session_id, title, category, owner_id, owner_name, notes, created_at) VALUES (?,?,?,?,?,?,?,?,?)",
-            [row.id, row.created_by, row.session_id, row.title, row.category, row.owner_id, row.owner_name, row.notes, row.created_at]);
-          cards = [...cards, row];
+          // The id is the open form's, minted on its first Add and sent on every retry:
+          // a try whose answer was lost may have stored the card.
+          const row = { id: (modalEl.dataset.rowId ||= uid("c")), created_by: ME?.id ?? "demo-1", session_id: "", title, category, owner_id: ownerId, owner_name: ownerName, notes, created_at: nowIso() };
+          let stored = row;
+          if (DB && partner) {
+            try {
+              await db("INSERT INTO app_mental_load__cards (id, created_by, session_id, title, category, owner_id, owner_name, notes, created_at) VALUES (?,?,?,?,?,?,?,?,?)",
+                [row.id, row.created_by, row.session_id, row.title, row.category, row.owner_id, row.owner_name, row.notes, row.created_at]);
+            } catch (e) {
+              // Unknown outcome: read back by the pinned id. Found means an earlier try landed.
+              if (!readBackFirst(e)) throw e;
+              stored = await db("SELECT * FROM app_mental_load__cards WHERE id = ?", [row.id])
+                .then(r => r.rows?.[0] ?? null, e2 => { console.error(e2); return null; });
+              if (!stored) throw e;
+              console.error(e);
+              if (storedDiffers(stored, { title, category, owner_id: ownerId, notes })) note = "Saved as first entered — check it and update what changed.";
+            }
+          }
+          if (!cards.some(x => x.id === stored.id)) cards = [...cards, stored];
         }
         closeModal(); render();
-      } catch (e) { btn.disabled = false; btn.textContent = id ? "Save" : "Add"; console.error(e); alertErr("Couldn’t save the domain — try again."); }
+        if (note) alertErr(note);
+      } catch (e) { btn.disabled = false; btn.textContent = id ? "Save" : "Add"; console.error(e); alertErr(failureLine(e, { action: "save the domain", thing: "domain" })); }
     };
 
     // cycle owner: unassigned → me → partner → unassigned
@@ -355,10 +382,10 @@ let searchQ = "";       // in-app search (see logic.js searchableFields)
       try {
         if (DB && partner) {
           const { changed } = await db("UPDATE app_mental_load__cards SET owner_id=?, owner_name=?, updated_at=? WHERE id=?", [next, nextName, nowIso(), id]);
-          if (changed === 0) return cardNotChanged();
+          if (changed === 0) return cardNotChanged(id, "change the owner");
         }
         c.owner_id = next; c.owner_name = nextName; render();
-      } catch (e) { console.error(e); alertErr("Couldn’t change the owner — try again."); }
+      } catch (e) { console.error(e); alertErr(failureLine(e, { action: "change the owner", thing: "domain" })); }
     };
 
     window.deleteCard = async function(id) {
@@ -366,10 +393,10 @@ let searchQ = "";       // in-app search (see logic.js searchableFields)
       try {
         if (DB && partner) {
           const { changed } = await db("DELETE FROM app_mental_load__cards WHERE id=?", [id]);
-          if (changed === 0) return cardNotChanged();
+          if (changed === 0) return cardNotChanged(id, "delete the domain");
         }
         cards = cards.filter(x => x.id !== id); render();
-      } catch (e) { console.error(e); alertErr("Couldn’t delete the domain — try again."); }
+      } catch (e) { console.error(e); alertErr(failureLine(e, { action: "delete the domain", thing: "domain" })); }
     };
 
     window.openCheckin = function() {
@@ -381,13 +408,28 @@ let searchQ = "";       // in-app search (see logic.js searchableFields)
     window.submitCheckin = async function() {
       const note = document.getElementById("f-cknote").value.trim();
       const btn = modalEl.querySelector(".modal-actions .btn:last-child"); btn.disabled = true; btn.textContent = "Saving…";
-      const row = { id: uid("ck"), created_by: ME?.id ?? "demo-1", created_by_name: ME?.name ?? "Me", session_id: "", note, created_at: nowIso() };
+      // Pinned to the open form, so a retry after a lost answer cannot log it twice.
+      const row = { id: (modalEl.dataset.rowId ||= uid("ck")), created_by: ME?.id ?? "demo-1", created_by_name: ME?.name ?? "Me", session_id: "", note, created_at: nowIso() };
+      let stored = row, msg = "";
       try {
-        if (DB && partner) await db("INSERT INTO app_mental_load__checkins (id, created_by, created_by_name, session_id, note, created_at) VALUES (?,?,?,?,?,?)",
-          [row.id, row.created_by, row.created_by_name, row.session_id, row.note, row.created_at]);
-        lastCheckin = row;
+        if (DB && partner) {
+          try {
+            await db("INSERT INTO app_mental_load__checkins (id, created_by, created_by_name, session_id, note, created_at) VALUES (?,?,?,?,?,?)",
+              [row.id, row.created_by, row.created_by_name, row.session_id, row.note, row.created_at]);
+          } catch (e) {
+            // Unknown outcome: read back by the pinned id. Found means an earlier try landed.
+            if (!readBackFirst(e)) throw e;
+            stored = await db("SELECT * FROM app_mental_load__checkins WHERE id = ?", [row.id])
+              .then(r => r.rows?.[0] ?? null, e2 => { console.error(e2); return null; });
+            if (!stored) throw e;
+            console.error(e);
+            if (storedDiffers(stored, { note })) msg = "Logged as first entered — your later edits weren’t saved.";
+          }
+        }
+        lastCheckin = stored;
         closeModal(); render();
-      } catch (e) { btn.disabled = false; btn.textContent = "Log check-in"; console.error(e); alertErr("Couldn’t log the check-in — try again."); }
+        if (msg) alertErr(msg);
+      } catch (e) { btn.disabled = false; btn.textContent = "Log check-in"; console.error(e); alertErr(failureLine(e, { action: "log the check-in", thing: "check-in" })); }
     };
 
     /* ── render ── */
