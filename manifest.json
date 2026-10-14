@@ -68,9 +68,11 @@
       "partner_id_column": "partner_id",
       "session_column": "session_id",
       "partner_session_id_column": "session_id",
-      "require_reciprocal": true,
-      "retain_days": { "default": 365, "timestamp_column": "created_at", "override_key": "checkin_history" }
+      "require_reciprocal": true
     }
+  },
+  "retention": {
+    "checkins": { "default": 365, "timestamp_column": "created_at", "override_key": "checkin_history" }
   },
   "glance": {
     "source": {
@@ -80,8 +82,5 @@
     "display": { "template": "badge", "count": "n", "label": "cards nobody owns", "severity": "warn" }
   },
   "nav": { "label": "Mental Load" },
-  "kiosk": "never",
-  "resource_limits": {
-    "max_db_bytes": 26214400
-  }
+  "kiosk": "never"
 }
